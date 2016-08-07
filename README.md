@@ -18,7 +18,7 @@ Install with the following commands.
 ```
 
 ## Usage
-In the beggning, `qhs [QUERY]` is the basic usage.
+In the beginning, `qhs [QUERY]` is the basic usage.
 ```
  $ wc * > wc_out.txt
  $ qhs "SELECT * FROM ./wc_out.txt"
@@ -48,14 +48,13 @@ File.hs 66
 Option.hs 61
 Parser.hs 51
 SQL.hs 45
-wc_out.txt 6
 ```
 Hereby note that the table name `-` is the short hand name for `stdin`.
 ```
  $ wc * | qhs "SELECT c1,c4 FROM stdin WHERE c4 <> 'total' ORDER BY c1 DESC"
 ```
 
-You can use `-H` flag to make qhs regard the head line as the row of column names.
+You can use `-H` flag to make `qhs` regard the head line as the row of column names.
 ```
  $ cat basic.csv
 foo,bar,baz
@@ -75,7 +74,7 @@ UID cnt
 0 86
 89 3
 ```
-You can also use other SQL operations like `JOIN`, `UNION` and subquery.
+You can also use other SQL operations like `JOIN`, `UNION` and sub-query.
 The command helps you deal with multiple CSV files.
 
 Please refer to `qhs --help` for further options.
