@@ -1,0 +1,10 @@
+flags: {}
+packages:
+  - '.'
+extra-deps:
+  - sqlite-0.5.5
+  - sqlite-simple-0.4.9.0
+  - simple-sql-parser-0.4.2
+  - Crypto-4.2.5.1
+  - zlib-0.6.1.1
+resolver: lts-6.10
