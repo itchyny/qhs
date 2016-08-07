@@ -1,0 +1,1 @@
+qhs -q empty.sql

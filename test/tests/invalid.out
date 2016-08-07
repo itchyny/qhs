@@ -1,0 +1,6 @@
+<<query>>:1:14:
+SELECT * FROM
+             ^
+"<<query>>" (line 1, column 14):
+unexpected end of input
+expecting whitespace, "(", lateral, identifier or "`"
