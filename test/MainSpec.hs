@@ -15,12 +15,12 @@ qhsSpec =
   describe "qhs" $ do
 
     let tests = [
-          "basic", "columns", "stdin", "stdin_hyphen", "header", "where",
-          "count", "is_null", "not_null", "output_header", "tab", "tab2",
-          "spaces", "output_delimiter", "tab_delimited_output", "multiline",
-          "query_file", "gzip", "gzip_stdin", "avg", "sum", "avg_sum", "seq",
-          "group", "group_sum", "empty_query", "empty_query_file", "concat",
-          "join", "invalid", "version"
+          "basic", "columns", "stdin", "header", "where", "tab", "tab2",
+          "count", "is_null", "not_null", "output_header", "spaces",
+          "output_delimiter", "tab_delimited_output", "multiline",
+          "query_file", "empty_query", "empty_query_file",
+          "gzip", "gzip_stdin", "avg", "sum", "avg_sum", "seq",
+          "group", "group_sum", "concat", "join", "invalid", "version"
           ]
 
     forM_ tests $ \test -> do

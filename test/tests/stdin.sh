@@ -1,1 +1,1 @@
-cat basic.csv | qhs -H "SELECT foo,baz FROM stdin WHERE bar IS NOT NULL"
+cat basic.csv | qhs -H "SELECT foo,baz FROM - WHERE bar IS NOT NULL"
