@@ -19,15 +19,21 @@ replaceTableNamesSpec =
 
     it "should replace the file names with table names" $ do
       let query = "SELECT * FROM table0 WHERE c0 > 0"
-      let expected1 = ("SELECT * FROM ttable WHERE c0 > 0",
-                       Map.fromList [("table0", "ttable")])
-      replaceTableNames query `shouldBe` expected1
+      let expected = ("SELECT * FROM ttable WHERE c0 > 0",
+                      Map.fromList [("table0", "ttable")])
+      replaceTableNames query `shouldBe` expected
 
     it "should replace multiple file names with table names" $ do
       let query = "SELECT * FROM ./src/table0.csv\nJOIN /tmp/table1.csv\tON c1 = c2 WHERE c0 > 0"
-      let expected2 = ("SELECT * FROM tsrctable0csvWor\nJOIN ttmptable1csvWo\tON c1 = c2 WHERE c0 > 0",
-                       Map.fromList [("./src/table0.csv", "tsrctable0csvWor"),("/tmp/table1.csv", "ttmptable1csvWo")])
-      replaceTableNames query `shouldBe` expected2
+      let expected = ("SELECT * FROM tsrctable0csvWor\nJOIN ttmptable1csvWo\tON c1 = c2 WHERE c0 > 0",
+                      Map.fromList [("./src/table0.csv", "tsrctable0csvWor"),("/tmp/table1.csv", "ttmptable1csvWo")])
+      replaceTableNames query `shouldBe` expected
+
+    it "should replace only the table names" $ do
+      let query = "SELECT * FROM stdin WHERE c0 LIKE '%foo stdin bar%'"
+      let expected = ("SELECT * FROM tstdi WHERE c0 LIKE '%foo stdin bar%'",
+                      Map.fromList [("stdin", "tstdi")])
+      replaceTableNames query `shouldBe` expected
 
 roughlyExtractTableNamesSpec :: Spec
 roughlyExtractTableNamesSpec =
@@ -52,6 +58,11 @@ replaceBackTableNamesSpec =
 
     it "should replace back multiple table names with the file names" $ do
       let query = "SELECT * FROM ./src/table0.csv\nJOIN /tmp/table1.csv\tON c1 = c2 WHERE c0 > 0"
+      let (query', tableMap) = replaceTableNames query
+      replaceBackTableNames tableMap query' `shouldBe` query
+
+    it "should replace back only the table names" $ do
+      let query = "SELECT * FROM stdin WHERE c0 LIKE '%foo tstdi bar%'"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
 
