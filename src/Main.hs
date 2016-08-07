@@ -85,7 +85,7 @@ parseQuery qs = do
 readFilesCreateTables :: Option.Option -> SQLite.SQLiteHandle -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
   forM_ (Map.toList tableMap) $ \(path, name) -> do
-    handle <- openFile (if path `elem` ["stdin", "-"] then "/dev/stdin" else path) ReadMode
+    handle <- openFile (if path == "-" then "/dev/stdin" else path) ReadMode
     let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path }
     (columns, body) <- File.readFromFile opts' handle
     when (length columns == 0) $ do
