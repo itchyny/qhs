@@ -1,0 +1,59 @@
+name:                   qhs
+version:                0.1.0
+author:                 itchyny <https://github.com/itchyny>
+maintainer:             itchyny <https://github.com/itchyny>
+license:                MIT
+license-file:           LICENSE
+category:               Console
+build-type:             Simple
+cabal-version:          >=1.6
+synopsis:               Command line processing tool qhs, SQL queries on CSV and TSV files.
+description:            This is a Haskell port of q command (https://github.com/harelba/q).
+
+executable qhs
+  hs-source-dirs:       src
+  main-is:              Main.hs
+  ghc-options:          -threaded -Werror -Wall
+  other-modules:        Parser
+                      , SQL
+                      , File
+                      , Option
+                      , Paths_qhs
+  build-depends:        base >= 4.0 && < 5
+                      , containers
+                      , split
+                      , syb >= 0.4
+                      , sqlite
+                      , sqlite-simple
+                      , simple-sql-parser
+                      , optparse-applicative
+                      , bytestring
+                      , Crypto
+                      , zlib
+
+test-suite spec
+  hs-source-dirs:       test
+  main-is:              Spec.hs
+  ghc-options:          -threaded -Werror -Wall
+  other-modules:        Parser
+                      , SQL
+                      , File
+                      , ParserSpec
+                      , SQLSpec
+                      , FileSpec
+                      , MainSpec
+  type:                 exitcode-stdio-1.0
+  hs-source-dirs:       test,src
+  build-depends:        base >= 4.0 && < 5
+                      , containers
+                      , split
+                      , syb >= 0.4
+                      , sqlite
+                      , sqlite-simple
+                      , simple-sql-parser
+                      , hspec
+                      , process
+
+source-repository head
+  type:     git
+  location: git@github.com:itchyny/qhs.git
