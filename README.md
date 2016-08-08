@@ -2,8 +2,6 @@
 ### SQL queries on CSV and TSV files
 This is a Haskell implementation of [q](https://github.com/harelba/q) command.
 
-This is a project for my practice of writing a command line tool in Haskell.
-
 ## Installation
 Prepare `stack` command from [here](https://docs.haskellstack.org).
 
@@ -48,10 +46,6 @@ File.hs 66
 Option.hs 61
 Parser.hs 51
 SQL.hs 45
-```
-Hereby note that the table name `-` is the short hand name for `stdin`.
-```
- $ wc * | qhs "SELECT c1,c4 FROM stdin WHERE c4 <> 'total' ORDER BY c1 DESC"
 ```
 
 You can use `-H` flag to make `qhs` regard the head line as the row of column names.
