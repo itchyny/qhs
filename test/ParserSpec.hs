@@ -18,21 +18,27 @@ replaceTableNamesSpec =
   describe "replaceTableNames" $ do
 
     it "should replace the file names with table names" $ do
-      let query = "SELECT * FROM table0 WHERE c0 > 0"
-      let expected = ("SELECT * FROM ttable WHERE c0 > 0",
-                      Map.fromList [("table0", "ttable")])
+      let query = "SELECT * FROM ./table0 WHERE c0 > 0"
+      let expected = ("SELECT * FROM table0d8 WHERE c0 > 0",
+                      Map.fromList [("./table0", "table0d8")])
       replaceTableNames query `shouldBe` expected
 
     it "should replace multiple file names with table names" $ do
       let query = "SELECT * FROM ./src/table0.csv\nJOIN /tmp/table1.csv\tON c1 = c2 WHERE c0 > 0"
-      let expected = ("SELECT * FROM tsrctable0csvWor\nJOIN ttmptable1csvWo\tON c1 = c2 WHERE c0 > 0",
-                      Map.fromList [("./src/table0.csv", "tsrctable0csvWor"),("/tmp/table1.csv", "ttmptable1csvWo")])
+      let expected = ("SELECT * FROM srctable0csvd0bf\nJOIN tmptable1csvbb2\tON c1 = c2 WHERE c0 > 0",
+                      Map.fromList [("./src/table0.csv", "srctable0csvd0bf"),("/tmp/table1.csv", "tmptable1csvbb2")])
       replaceTableNames query `shouldBe` expected
 
     it "should replace only the table names" $ do
-      let query = "SELECT * FROM stdin WHERE c0 LIKE '%foo stdin bar%'"
-      let expected = ("SELECT * FROM tstdi WHERE c0 LIKE '%foo stdin bar%'",
-                      Map.fromList [("stdin", "tstdi")])
+      let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo ./table0 bar%'"
+      let expected = ("SELECT * FROM table0d8 WHERE c0 LIKE '%foo ./table0 bar%'",
+                      Map.fromList [("./table0", "table0d8")])
+      replaceTableNames query `shouldBe` expected
+
+    it "should prepend a alphabet character 't' before the sha1 hash" $ do
+      let query = "SELECT * FROM ./テスト"
+      let expected = ("SELECT * FROM t62e4",
+                      Map.fromList [("./テスト", "t62e4")])
       replaceTableNames query `shouldBe` expected
 
 roughlyExtractTableNamesSpec :: Spec
@@ -52,7 +58,7 @@ replaceBackTableNamesSpec =
   describe "replaceBackTableNames" $ do
 
     it "should replace back table names to the file names" $ do
-      let query = "SELECT * FROM table0 WHERE c0 > 0"
+      let query = "SELECT * FROM ./table0 WHERE c0 > 0"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
 
@@ -62,7 +68,7 @@ replaceBackTableNamesSpec =
       replaceBackTableNames tableMap query' `shouldBe` query
 
     it "should replace back only the table names" $ do
-      let query = "SELECT * FROM stdin WHERE c0 LIKE '%foo tstdi bar%'"
+      let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo table0d8 bar%'"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
 
