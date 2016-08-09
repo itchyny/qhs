@@ -6,7 +6,7 @@ import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy.Char8 as Char8
 import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
-import Data.List.Split
+import Data.List.Split (split, whenElt)
 import qualified Data.Map as Map
 import Data.Maybe (listToMaybe)
 import Data.Tuple (swap)

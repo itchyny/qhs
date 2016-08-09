@@ -1,8 +1,8 @@
 module File where
 
 import qualified Codec.Compression.GZip as GZip
-import Control.Applicative
-import Control.Monad
+import Control.Applicative ((<|>))
+import Control.Monad (guard, when)
 import qualified Data.ByteString.Lazy as ByteString
 import qualified Data.ByteString.Lazy.Char8 as Char8
 import Data.Char (isSpace)
