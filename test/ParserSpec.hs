@@ -19,26 +19,26 @@ replaceTableNamesSpec =
 
     it "should replace the file names with table names" $ do
       let query = "SELECT * FROM ./table0 WHERE c0 > 0"
-      let expected = ("SELECT * FROM table0d8 WHERE c0 > 0",
-                      Map.fromList [("./table0", "table0d8")])
+      let expected = ("SELECT * FROM d8dc7ec0 WHERE c0 > 0",
+                      Map.fromList [("./table0", "d8dc7ec0")])
       replaceTableNames query `shouldBe` expected
 
     it "should replace multiple file names with table names" $ do
       let query = "SELECT * FROM ./src/table0.csv\nJOIN /tmp/table1.csv\tON c1 = c2 WHERE c0 > 0"
-      let expected = ("SELECT * FROM srctable0csvd0bf\nJOIN tmptable1csvbb2\tON c1 = c2 WHERE c0 > 0",
-                      Map.fromList [("./src/table0.csv", "srctable0csvd0bf"),("/tmp/table1.csv", "tmptable1csvbb2")])
+      let expected = ("SELECT * FROM d0bf242ceb32ba2b\nJOIN bb239869bdfc764\tON c1 = c2 WHERE c0 > 0",
+                      Map.fromList [("./src/table0.csv", "d0bf242ceb32ba2b"),("/tmp/table1.csv", "bb239869bdfc764")])
       replaceTableNames query `shouldBe` expected
 
     it "should replace only the table names" $ do
       let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo ./table0 bar%'"
-      let expected = ("SELECT * FROM table0d8 WHERE c0 LIKE '%foo ./table0 bar%'",
-                      Map.fromList [("./table0", "table0d8")])
+      let expected = ("SELECT * FROM d8dc7ec0 WHERE c0 LIKE '%foo ./table0 bar%'",
+                      Map.fromList [("./table0", "d8dc7ec0")])
       replaceTableNames query `shouldBe` expected
 
-    it "should prepend a alphabet character 't' before the sha1 hash" $ do
+    it "should take care of multi-byte file names" $ do
       let query = "SELECT * FROM ./テスト"
-      let expected = ("SELECT * FROM t62e4",
-                      Map.fromList [("./テスト", "t62e4")])
+      let expected = ("SELECT * FROM e4c1e",
+                      Map.fromList [("./テスト", "e4c1e")])
       replaceTableNames query `shouldBe` expected
 
 roughlyExtractTableNamesSpec :: Spec
@@ -68,7 +68,7 @@ replaceBackTableNamesSpec =
       replaceBackTableNames tableMap query' `shouldBe` query
 
     it "should replace back only the table names" $ do
-      let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo table0d8 bar%'"
+      let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo d8dc7ec0 bar%'"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
 
