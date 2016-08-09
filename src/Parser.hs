@@ -1,6 +1,5 @@
 module Parser (replaceTableNames, roughlyExtractTableNames, replaceBackTableNames, extractTableNames, errorString, TableNameMap) where
 
-import Control.Monad (mfilter)
 import qualified Crypto.Hash.SHA1 as SHA1
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy.Char8 as Char8
@@ -8,7 +7,6 @@ import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
 import Data.List.Split (split, whenElt)
 import qualified Data.Map as Map
-import Data.Maybe (listToMaybe)
 import Data.Tuple (swap)
 import qualified Language.SQL.SimpleSQL.Parser as Parser
 import qualified Language.SQL.SimpleSQL.Syntax as Syntax
@@ -18,22 +16,14 @@ type TableNameMap = Map.Map String String
 -- | Replace all the occurrence of table names (file names, in many cases) into
 -- valid table names in SQL. The table names are calculated based on the file
 -- names, keeping its length so that error position stays at the same position
--- after we replace them back to the file names. I take `max 3` to avoid conflict.
+-- after we replace them back to the file names. I take `max 5` to avoid conflict.
 replaceTableNames :: String -> (String, TableNameMap)
 replaceTableNames qs = (replaceQueryWithTableMap tableMap qs, tableMap)
-  where tableNames = roughlyExtractTableNames qs
-        withAlias xs = let char = maybe ('t':) (const id) $ mfilter isAlpha' $ listToMaybe $ filter isAlphaNum' xs
-                           in (xs, take (max 3 (length xs)) $ char $ filter isAlphaNum' (xs ++ sha1Encode xs) ++ repeat '_')
-        tableMap = Map.fromList $ map withAlias tableNames
+  where genTableName xs = take (max 5 (length xs)) $ dropWhile isNumber $ concat $ tail $ iterate sha1Encode xs
+        tableMap = Map.fromList [ (name, genTableName name) | name <- roughlyExtractTableNames qs ]
 
 sha1Encode :: String -> String
 sha1Encode = Char8.unpack . Builder.toLazyByteString . Builder.byteStringHex . SHA1.hashlazy . Char8.pack
-
-isAlpha' :: Char -> Bool
-isAlpha' c = let c' = toUpper c in 'A' <= c' && c' <= 'Z'
-
-isAlphaNum' :: Char -> Bool
-isAlphaNum' c = isNumber c || isAlpha' c
 
 -- | This function roughly extract the table names. We need this function because
 -- the given query contains the file names so the SQL parser cannot parse.
