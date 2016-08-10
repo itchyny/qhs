@@ -5,7 +5,7 @@ import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy.Char8 as Char8
 import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
-import Data.List.Split (split, whenElt)
+import Data.List (unfoldr)
 import qualified Data.Map as Map
 import Data.Tuple (swap)
 import qualified Language.SQL.SimpleSQL.Parser as Parser
@@ -28,7 +28,8 @@ sha1Encode = Char8.unpack . Builder.toLazyByteString . Builder.byteStringHex . S
 -- | This function roughly extract the table names. We need this function because
 -- the given query contains the file names so the SQL parser cannot parse.
 roughlyExtractTableNames :: String -> [String]
-roughlyExtractTableNames qs = let qss = words qs in [ ys | (xs, ys) <- zip qss (tail qss), isTableNamePrefix xs ]
+roughlyExtractTableNames qs = [ ys | (xs, ys) <- zip qss (drop 2 qss), isTableNamePrefix xs ]
+  where qss = splitQuery qs
 
 -- | The words after these words are possibly table names.
 isTableNamePrefix :: String -> Bool
@@ -37,8 +38,21 @@ isTableNamePrefix xs = map toUpper xs `elem` ["FROM", "JOIN"]
 -- | Replace the table names using the tableMap.
 replaceQueryWithTableMap :: TableNameMap -> String -> String
 replaceQueryWithTableMap tableMap qs = query
-  where qss = split (whenElt isSpace) qs
+  where qss = splitQuery qs
         query = concat [ if isTableNamePrefix xs then Map.findWithDefault ys ys tableMap else ys | (xs, ys) <- zip ("" : "" : qss) qss ]
+
+-- | Split the query string with spaces, taking the quotes into consideration.
+splitQuery :: String -> [String]
+splitQuery = unfoldr split'
+  where split' :: String -> Maybe (String, String)
+        split' ccs@(c:cs) | c `elem` "\"'`" = Just $ splitAt (1 + countUntil c cs) ccs
+                          | isSpace c = Just $ span isSpace ccs
+                          | otherwise = Just $ break isSpace ccs
+        split' [] = Nothing
+        countUntil c ('\\':c':cs) | c == c' = 2 + countUntil c cs
+        countUntil c (c':cs) | c == c' = 1
+                             | otherwise = 1 + countUntil c cs
+        countUntil _ [] = 0
 
 -- | Replace the generated table names back into the original file names.
 replaceBackTableNames :: TableNameMap -> String -> String
