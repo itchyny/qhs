@@ -41,6 +41,24 @@ replaceTableNamesSpec =
                       Map.fromList [("./テスト", "e4c1e")])
       replaceTableNames query `shouldBe` expected
 
+    it "should not replace inside single quotes" $ do
+      let query = "SELECT * FROM table0.csv WHERE c0 LIKE '%foo FROM table1.csv bar%'"
+      let expected = ("SELECT * FROM ec0f6d989c WHERE c0 LIKE '%foo FROM table1.csv bar%'",
+                      Map.fromList [("table0.csv", "ec0f6d989c")])
+      replaceTableNames query `shouldBe` expected
+
+    it "should not replace inside double quotes" $ do
+      let query = "SELECT * FROM table0.csv WHERE c0 LIKE \"%foo FROM table0.csv bar%\""
+      let expected = ("SELECT * FROM ec0f6d989c WHERE c0 LIKE \"%foo FROM table0.csv bar%\"",
+                      Map.fromList [("table0.csv", "ec0f6d989c")])
+      replaceTableNames query `shouldBe` expected
+
+    it "should quote the file name containing spaces" $ do
+      let query = "SELECT * FROM `foo/bar baz qux/quux.csv`"
+      let expected = ("SELECT * FROM a3ecf94bae7d224b52e9ad3df3",
+                      Map.fromList [("`foo/bar baz qux/quux.csv`", "a3ecf94bae7d224b52e9ad3df3")])
+      replaceTableNames query `shouldBe` expected
+
 roughlyExtractTableNamesSpec :: Spec
 roughlyExtractTableNamesSpec =
   describe "roughlyExtractTableNames" $ do
@@ -52,6 +70,13 @@ roughlyExtractTableNamesSpec =
     it "should roughly extract multiple table names" $ do
       roughlyExtractTableNames "SELECT * FROM table0 JOIN table1 ON c1 = c2 WHERE c0 > 0" `shouldBe` [ "table0", "table1" ]
       roughlyExtractTableNames "select * from table0 join table1 on c1 = c2 where c0 > 0" `shouldBe` [ "table0", "table1" ]
+
+    it "should roughly extract table names but ignore inside quotes" $ do
+      roughlyExtractTableNames "SELECT * FROM table0 JOIN table1 ON c1 = c2 WHERE c3 LIKE 'A FROM table3 '" `shouldBe` [ "table0", "table1" ]
+      roughlyExtractTableNames "select * from table0 join table1 on c1 = c2 where c3 like 'a from table3 '" `shouldBe` [ "table0", "table1" ]
+
+    it "should roughly extract quoted table names" $ do
+      roughlyExtractTableNames "SELECT * FROM `src/table 0 .csv` JOIN '/tmp/table 1.csv'" `shouldBe` [ "`src/table 0 .csv`", "'/tmp/table 1.csv'" ]
 
 replaceBackTableNamesSpec :: Spec
 replaceBackTableNamesSpec =
