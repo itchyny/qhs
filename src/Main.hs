@@ -84,8 +84,9 @@ parseQuery qs = do
 readFilesCreateTables :: Option.Option -> SQLite.SQLiteHandle -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
   forM_ (Map.toList tableMap) $ \(path, name) -> do
-    handle <- openFile (if path == "-" then "/dev/stdin" else path) ReadMode
-    let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path }
+    let path' = unquote path
+    handle <- openFile (if path' == "-" then "/dev/stdin" else path') ReadMode
+    let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path' }
     (columns, body) <- File.readFromFile opts' handle
     when (length columns == 0) $ do
       hPutStrLn stderr $ if Option.skipHeader opts
@@ -98,6 +99,8 @@ readFilesCreateTables opts conn tableMap =
     when (length columns >= 1) $
       createTable conn name path columns body
     hClose handle
+  where unquote (x:xs@(_:_)) | x `elem` "\"'`" && x == last xs = init xs
+        unquote xs = xs
 
 createTable :: SQLite.SQLiteHandle -> String -> String -> [String] -> [[String]] -> IO ()
 createTable conn name path columns body = do
