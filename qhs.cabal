@@ -28,7 +28,7 @@ executable qhs
                       , simple-sql-parser
                       , optparse-applicative
                       , bytestring
-                      , cryptohash
+                      , cryptonite
                       , zlib
 
 test-suite spec

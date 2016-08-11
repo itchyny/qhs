@@ -1,8 +1,7 @@
 module Parser (replaceTableNames, roughlyExtractTableNames, replaceBackTableNames, extractTableNames, errorString, TableNameMap) where
 
-import qualified Crypto.Hash.SHA1 as SHA1
-import qualified Data.ByteString.Builder as Builder
-import qualified Data.ByteString.Lazy.Char8 as Char8
+import qualified Crypto.Hash as Crypto
+import qualified Data.ByteString.Char8 as Char8
 import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
 import Data.List (unfoldr)
@@ -23,7 +22,7 @@ replaceTableNames qs = (replaceQueryWithTableMap tableMap qs, tableMap)
         tableMap = Map.fromList [ (name, genTableName name) | name <- roughlyExtractTableNames qs ]
 
 sha1Encode :: String -> String
-sha1Encode = Char8.unpack . Builder.toLazyByteString . Builder.byteStringHex . SHA1.hashlazy . Char8.pack
+sha1Encode = show . (Crypto.hash :: Char8.ByteString -> Crypto.Digest Crypto.SHA1) . Char8.pack
 
 -- | This function roughly extract the table names. We need this function because
 -- the given query contains the file names so the SQL parser cannot parse.
