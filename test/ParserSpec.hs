@@ -41,6 +41,12 @@ replaceTableNamesSpec =
                       Map.fromList [("./テスト", "e4c1e")])
       replaceTableNames query `shouldBe` expected
 
+    it "should take care of file name whose sha1 hash has only numbers" $ do
+      let query = "SELECT * FROM vdbdc.csv"
+      let expected = ("SELECT * FROM f8ce01ceb",
+                      Map.fromList [("vdbdc.csv", "f8ce01ceb")])
+      replaceTableNames query `shouldBe` expected
+
     it "should not replace inside single quotes" $ do
       let query = "SELECT * FROM table0.csv WHERE c0 LIKE '%foo FROM table1.csv bar%'"
       let expected = ("SELECT * FROM ec0f6d989c WHERE c0 LIKE '%foo FROM table1.csv bar%'",
