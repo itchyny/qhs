@@ -35,7 +35,7 @@ replaceTableNamesSpec =
                       Map.fromList [("./table0", "d8dc7ec0")])
       replaceTableNames query `shouldBe` expected
 
-    it "should take care of multi-byte file names" $ do
+    it "should take care of multi-byte file names correctly" $ do
       let query = "SELECT * FROM ./テスト"
       let expected = ("SELECT * FROM e4c1e",
                       Map.fromList [("./テスト", "e4c1e")])
@@ -53,7 +53,7 @@ replaceTableNamesSpec =
                       Map.fromList [("table0.csv", "ec0f6d989c")])
       replaceTableNames query `shouldBe` expected
 
-    it "should quote the file name containing spaces" $ do
+    it "should replace the file name containing spaces" $ do
       let query = "SELECT * FROM `foo/bar baz qux/quux.csv`"
       let expected = ("SELECT * FROM a3ecf94bae7d224b52e9ad3df3",
                       Map.fromList [("`foo/bar baz qux/quux.csv`", "a3ecf94bae7d224b52e9ad3df3")])
@@ -94,6 +94,11 @@ replaceBackTableNamesSpec =
 
     it "should replace back only the table names" $ do
       let query = "SELECT * FROM ./table0 WHERE c0 LIKE '%foo d8dc7ec0 bar%'"
+      let (query', tableMap) = replaceTableNames query
+      replaceBackTableNames tableMap query' `shouldBe` query
+
+    it "should replace back the table name to the file name containing spaces" $ do
+      let query = "SELECT * FROM `foo/bar baz qux/quux.csv`"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
 
