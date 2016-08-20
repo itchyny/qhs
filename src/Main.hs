@@ -28,7 +28,7 @@ runCommand :: Option.Option -> IO ()
 runCommand opts = do
   conn <- SQL.open ":memory:"
   maybeQueryTableMap <- parseQuery =<< fetchQuery opts
-  maybe (return ()) (runQuery opts conn) maybeQueryTableMap
+  forM_ maybeQueryTableMap $ runQuery opts conn
   SQL.close conn
 
 runQuery :: Option.Option -> SQLite.SQLiteHandle -> (String, Parser.TableNameMap) -> IO ()
@@ -36,18 +36,18 @@ runQuery opts conn (query, tableMap) = do
   readFilesCreateTables opts conn tableMap
   ret <- fmap head <$> SQL.execute conn query
   case ret of
-      Right r -> do
-        let outputDelimiter =
-              fromMaybe " " $ guard (Option.tabDelimitedOutput opts) *> Just "\t"
-                           <|> Option.outputDelimiter opts
-                           <|> guard (Option.tabDelimited opts) *> Just "\t"
-                           <|> Option.delimiter opts
-        when (Option.outputHeader opts) $
-          case listToMaybe r of
+       Right r -> do
+         let outputDelimiter =
+               fromMaybe " " $ guard (Option.tabDelimitedOutput opts) *> Just "\t"
+                            <|> Option.outputDelimiter opts
+                            <|> guard (Option.tabDelimited opts) *> Just "\t"
+                            <|> Option.delimiter opts
+         when (Option.outputHeader opts) $
+           case listToMaybe r of
                 Just xs -> putStrLn $ intercalate outputDelimiter $ map fst xs
                 Nothing -> return ()
-        mapM_ (mapM_ (putStrLn . intercalate outputDelimiter . map snd)) ret
-      Left err -> putStrLn err
+         mapM_ (mapM_ (putStrLn . intercalate outputDelimiter . map snd)) ret
+       Left err -> putStrLn err
 
 fetchQuery :: Option.Option -> IO String
 fetchQuery opts = do

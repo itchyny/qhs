@@ -32,9 +32,8 @@ readFromFile opts handle = do
   let stripSpaces = if Option.keepLeadingWhiteSpace opts then id else dropWhile isSpace
   let body = filter (not . null) $ map (map stripSpaces . splitFixedSize splitter size) (skipLine contents)
   return (columns, body)
-  where joinMultiLines (cs:ds:css)
-         | valid True cs = cs : joinMultiLines (ds:css)
-         | otherwise = joinMultiLines ((cs ++ "\n" ++ ds) : css)
+  where joinMultiLines (cs:ds:css) | valid True cs = cs : joinMultiLines (ds:css)
+                                   | otherwise = joinMultiLines $ (cs ++ "\n" ++ ds) : css
           where valid False ('"':'"':xs) = valid False xs
                 valid False ('\\':'"':xs) = valid False xs
                 valid b ('"':xs) = valid (not b) xs
