@@ -3,8 +3,8 @@ packages:
   - '.'
 extra-deps:
   - sqlite-0.5.5
-  - sqlite-simple-0.4.9.0
+  - sqlite-simple-0.4.13.0
   - simple-sql-parser-0.4.2
-  - cryptonite-0.17
-  - zlib-0.6.1.1
-resolver: lts-6.10
+  - cryptonite-0.22
+  - zlib-0.6.1.2
+resolver: lts-8.10
