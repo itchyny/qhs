@@ -19,7 +19,7 @@ executable qhs
                       , File
                       , Option
                       , Paths_qhs
-  build-depends:        base >= 4.0 && < 5
+  build-depends:        base >= 4.9 && < 5
                       , containers
                       , split
                       , syb >= 0.4
@@ -44,7 +44,7 @@ test-suite spec
                       , MainSpec
   type:                 exitcode-stdio-1.0
   hs-source-dirs:       test,src
-  build-depends:        base >= 4.0 && < 5
+  build-depends:        base >= 4.9 && < 5
                       , containers
                       , split
                       , syb >= 0.4
