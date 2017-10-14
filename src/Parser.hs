@@ -46,7 +46,7 @@ splitQuery = unfoldr split'
   where split' :: String -> Maybe (String, String)
         split' ccs@(c:cs) | c `elem` "\"'`" = Just $ splitAt (1 + countUntil c cs) ccs
                           | isSpace c = Just $ span isSpace ccs
-                          | otherwise = Just $ break isSpace ccs
+                          | otherwise = Just $ break (\d -> isSpace d || d `elem` "\"'`") ccs
         split' [] = Nothing
         countUntil c ('\\':c':cs) | c == c' = 2 + countUntil c cs
         countUntil c (c':cs) | c == c' = 1
