@@ -38,6 +38,7 @@ test-suite spec
   other-modules:        Parser
                       , SQL
                       , File
+                      , Option
                       , ParserSpec
                       , SQLSpec
                       , FileSpec
