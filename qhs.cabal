@@ -39,6 +39,7 @@ test-suite spec
                       , SQL
                       , File
                       , Option
+                      , Paths_qhs
                       , ParserSpec
                       , SQLSpec
                       , FileSpec
