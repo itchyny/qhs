@@ -45,7 +45,7 @@ detectSplitter :: String -> String -> Char -> Bool
 detectSplitter xs ys = head $ [ splitter | (x, y, splitter) <- map splitLines splitters
                                          , 1 < length x && length x <= length y ] ++ splitters
   where splitLines f = (splitFixedSize f 0 xs, splitFixedSize f 0 ys, f)
-        splitters = [ isSpace, (==',') ]
+        splitters = [ (==','), isSpace ]
 
 splitFixedSize :: (Char -> Bool) -> Int -> String -> [String]
 splitFixedSize f n = fill . go n
