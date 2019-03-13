@@ -13,7 +13,7 @@ description:            This is a Haskell port of q command (https://github.com/
 executable qhs
   hs-source-dirs:       src
   main-is:              Main.hs
-  ghc-options:          -threaded -Werror -Wall
+  ghc-options:          -threaded -Wall
   other-modules:        Parser
                       , SQL
                       , File
