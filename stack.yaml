@@ -4,4 +4,4 @@ packages:
 extra-deps:
   - sqlite-0.5.5
   - simple-sql-parser-0.4.3
-resolver: lts-11.21
+resolver: lts-13.11
