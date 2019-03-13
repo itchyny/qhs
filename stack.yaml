@@ -3,5 +3,5 @@ packages:
   - '.'
 extra-deps:
   - sqlite-0.5.5
-  - simple-sql-parser-0.4.3
+  - simple-sql-parser-0.4.4
 resolver: lts-13.11
