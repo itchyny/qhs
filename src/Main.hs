@@ -9,7 +9,7 @@ import Data.Maybe
 import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Set ((\\))
-import qualified Database.SQLite as SQLite
+import qualified Database.SQLite.Simple as SQLite
 import Options.Applicative (execParser, helper, info, fullDesc, header)
 import System.Exit (exitFailure)
 import System.IO
@@ -19,6 +19,7 @@ import qualified File as File
 import qualified Option as Option
 import qualified Parser as Parser
 import qualified SQL as SQL
+import qualified SQLType as SQLType
 
 main :: IO ()
 main = runCommand =<< execParser opts
@@ -32,22 +33,20 @@ runCommand opts = do
   forM_ maybeQueryTableMap $ runQuery opts conn
   SQL.close conn
 
-runQuery :: Option.Option -> SQLite.SQLiteHandle -> (String, Parser.TableNameMap) -> IO ()
+runQuery :: Option.Option -> SQLite.Connection -> (String, Parser.TableNameMap) -> IO ()
 runQuery opts conn (query, tableMap) = do
   readFilesCreateTables opts conn tableMap
-  ret <- fmap head <$> SQL.execute conn query
+  ret <- SQL.execute conn query
   case ret of
-       Right r -> do
+       Right (cs, rs) -> do
          let outputDelimiter =
                fromMaybe " " $ guard (Option.tabDelimitedOutput opts) *> Just "\t"
                             <|> Option.outputDelimiter opts
                             <|> guard (Option.tabDelimited opts) *> Just "\t"
                             <|> Option.delimiter opts
          when (Option.outputHeader opts) $
-           case listToMaybe r of
-                Just xs -> putStrLn $ intercalate outputDelimiter $ map fst xs
-                Nothing -> return ()
-         mapM_ (mapM_ (putStrLn . intercalate outputDelimiter . map snd)) ret
+           putStrLn $ intercalate outputDelimiter $ cs
+         mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
        Left err -> putStrLn err
 
 fetchQuery :: Option.Option -> IO String
@@ -82,7 +81,7 @@ parseQuery qs = do
               putStrLn "Probably a bug of qhs. Please submit a issue report."
               return Nothing
 
-readFilesCreateTables :: Option.Option -> SQLite.SQLiteHandle -> Parser.TableNameMap -> IO ()
+readFilesCreateTables :: Option.Option -> SQLite.Connection -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
   forM_ (Map.toList tableMap) $ \(path, name) -> do
     let path' = unquote path
@@ -103,13 +102,12 @@ readFilesCreateTables opts conn tableMap =
   where unquote (x:xs@(_:_)) | x `elem` "\"'`" && x == last xs = init xs
         unquote xs = xs
 
-createTable :: SQLite.SQLiteHandle -> String -> String -> [String] -> [[String]] -> IO ()
+createTable :: SQLite.Connection -> String -> String -> [String] -> [[String]] -> IO ()
 createTable conn name path columns body = do
   let probablyNumberColumn =
         [ all isJust [ readMaybe x :: Maybe Float | x <- xs, not (all isSpace x) ]
                                                   | xs <- transpose body ]
-  let types = [ if b then SQLite.SQLInt SQLite.NORMAL False False
-                     else SQLite.SQLChar Nothing | b <- probablyNumberColumn ]
+  let types = [ if b then SQLType.SQLInt else SQLType.SQLChar | b <- probablyNumberColumn ]
   ret <- SQL.createTable conn name columns types
   case ret of
        Just err -> do

@@ -16,6 +16,7 @@ executable qhs
   ghc-options:          -threaded -Wall
   other-modules:        Parser
                       , SQL
+                      , SQLType
                       , File
                       , Option
                       , Paths_qhs
@@ -23,11 +24,11 @@ executable qhs
                       , containers
                       , split
                       , syb >= 0.4
-                      , sqlite
                       , sqlite-simple
                       , simple-sql-parser
                       , optparse-applicative
                       , bytestring
+                      , text
                       , cryptonite
                       , zlib
 
@@ -37,6 +38,7 @@ test-suite spec
   ghc-options:          -threaded -Werror -Wall
   other-modules:        Parser
                       , SQL
+                      , SQLType
                       , File
                       , Option
                       , Paths_qhs
@@ -50,7 +52,6 @@ test-suite spec
                       , containers
                       , split
                       , syb >= 0.4
-                      , sqlite
                       , sqlite-simple
                       , simple-sql-parser
                       , hspec
