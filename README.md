@@ -21,7 +21,7 @@ Prepare `stack` command from [here](https://docs.haskellstack.org).
 
 ## Usage
 In the beginning, `qhs [QUERY]` is the basic usage.
-```
+```shell
  $ wc * > wc_out.txt
  $ qhs "SELECT * FROM ./wc_out.txt"
 66 471 3131 File.hs
@@ -33,7 +33,7 @@ In the beginning, `qhs [QUERY]` is the basic usage.
 ```
 You can specify the file name for the table name.
 The column names are automatically assigned as `c1`, `c2` and so on.
-```
+```shell
  $ qhs "SELECT c4,c1 FROM ./wc_out.txt WHERE c4 <> 'total' ORDER BY c1 DESC"
 Main.hs 118
 File.hs 66
@@ -43,7 +43,7 @@ SQL.hs 45
 ```
 
 The `qhs` command can read the table from the standard input as well.
-```
+```shell
  $ wc * | qhs "SELECT c4,c1 FROM - WHERE c4 <> 'total' ORDER BY c1 DESC"
 Main.hs 118
 File.hs 66
@@ -53,7 +53,7 @@ SQL.hs 45
 ```
 
 You can use `-H` flag to make `qhs` regard the head line as the row of column names.
-```
+```shell
  $ cat basic.csv
 foo,bar,baz
 a0,1,a2
@@ -65,7 +65,7 @@ b0 3 b2
 ```
 
 You can use the basic SQL operations; `GROUP BY`, `ORDER BY`, `LIMIT` and `COUNT(*)`.
-```
+```shell
  $ ps -ef | qhs -H -O "SELECT UID,COUNT(*) cnt FROM - GROUP BY UID ORDER BY cnt DESC LIMIT 3"
 UID cnt
 503 102
@@ -77,7 +77,7 @@ The command helps you deal with multiple CSV files.
 
 Please refer to `qhs --help` for further options.
 The command respects the behaviour of the original [q](https://github.com/harelba/q) command.
-```
+```shell
  $ qhs --help
 qhs - SQL queries on CSV and TSV files
 
