@@ -3,10 +3,14 @@
 This is a Haskell implementation of [q](https://github.com/harelba/q) command.
 
 ## Installation
-Prepare `stack` command from [here](https://docs.haskellstack.org).
-
-Install with the following commands.
+### Homebrew
+```shell
+ $ brew install itchyny/tap/miv
 ```
+
+### Build with stack
+Prepare `stack` command from [here](https://docs.haskellstack.org).
+```shell
  $ git clone https://github.com/itchyny/qhs
  $ cd qhs
  $ stack install
