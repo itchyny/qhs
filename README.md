@@ -5,7 +5,7 @@ This is a Haskell implementation of [q](https://github.com/harelba/q) command.
 ## Installation
 ### Homebrew
 ```shell
- $ brew install itchyny/tap/miv
+ $ brew install itchyny/tap/qhs
 ```
 
 ### Build with stack
