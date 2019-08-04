@@ -25,7 +25,7 @@ executable qhs
                       , split
                       , syb >= 0.4
                       , sqlite-simple
-                      , simple-sql-parser
+                      , simple-sql-parser >= 0.5.0
                       , optparse-applicative
                       , bytestring
                       , text
@@ -53,7 +53,7 @@ test-suite spec
                       , split
                       , syb >= 0.4
                       , sqlite-simple
-                      , simple-sql-parser
+                      , simple-sql-parser >= 0.5.0
                       , hspec
                       , process
 

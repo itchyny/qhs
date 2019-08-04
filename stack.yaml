@@ -2,5 +2,5 @@ flags: {}
 packages:
   - '.'
 extra-deps:
-  - simple-sql-parser-0.4.4
-resolver: lts-13.11
+  - simple-sql-parser-0.5.0
+resolver: lts-13.30
