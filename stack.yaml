@@ -3,4 +3,4 @@ packages:
   - '.'
 extra-deps:
   - simple-sql-parser-0.5.0
-resolver: lts-13.30
+resolver: lts-14.21
