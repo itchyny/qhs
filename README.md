@@ -1,4 +1,4 @@
-# qhs [![Build Status](https://travis-ci.org/itchyny/qhs.png?branch=master)](https://travis-ci.org/itchyny/qhs)
+# qhs [![CI Status](https://github.com/itchyny/qhs/workflows/CI/badge.svg)](https://github.com/itchyny/qhs/actions)
 ### SQL queries on CSV and TSV files
 This is a Haskell implementation of [q](https://github.com/harelba/q) command.
 
