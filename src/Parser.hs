@@ -7,6 +7,7 @@ import Data.Generics (everything, mkQ)
 import Data.List (unfoldr)
 import qualified Data.Map as Map
 import Data.Tuple (swap)
+import qualified Language.SQL.SimpleSQL.Dialect as Dialect
 import qualified Language.SQL.SimpleSQL.Parse as Parse
 import qualified Language.SQL.SimpleSQL.Syntax as Syntax
 
@@ -61,7 +62,7 @@ replaceBackTableNames tableMap = replaceQueryWithTableMap reverseMap
 -- | Extracts the table names using the rigid SQL parser.
 extractTableNames :: String -> FilePath -> Either Parse.ParseError [String]
 extractTableNames query path = everything (++) ([] `mkQ` tableNames)
-                            <$> Parse.parseQueryExpr Syntax.mysql path Nothing query
+                            <$> Parse.parseQueryExpr Dialect.mysql path Nothing query
   where tableNames (Syntax.TRSimple (name:_)) = fromName name
         tableNames _ = []
         fromName (Syntax.Name _ name) = [name]
