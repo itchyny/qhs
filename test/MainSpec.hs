@@ -20,7 +20,7 @@ qhsSpec =
           "output_delimiter", "tab_delimited_output", "multiline",
           "query_file", "empty_query", "empty_query_file", "file_spaces",
           "gzip", "gzip_stdin", "avg", "sum", "avg_sum", "seq",
-          "group", "group_sum", "concat", "join", "invalid", "version"
+          "group", "group_sum", "concat", "join", "invalid"
           ]
 
     forM_ tests $ \test -> do
