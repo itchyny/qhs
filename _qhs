@@ -1,0 +1,16 @@
+#compdef qhs
+
+_qhs ()
+{
+  _arguments -C \
+    '(-H --skip-header)'{-H,--skip-header}'[skip the header row]' \
+    '(-O --output-header)'{-O,--output-header}'[output the header line]' \
+    '(-d --delimiter)'{-d,--delimiter}'[field delimiter]' \
+    '(-t --tab-delimited-output)'{-t,--tab-delimited-output}'[use tab for field delimiter]' \
+    '(-k --keep-leading-whitespace)'{-k,--keep-leading-whitespace}'[keep leading whitespace in values]' \
+    '(-z --gzipped)'{-z,--gzipped}'[assuming the gzipped input]' \
+    '(-q --query-filename)'{-q,--query-filename}'[read query from file]' \
+    '(-v --version)'{-v,--version}'[print version]' \
+    '(-h --help)'{-h,--help}'[print help]' \
+    && ret=0
+}

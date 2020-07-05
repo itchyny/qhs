@@ -39,7 +39,7 @@ jobs:
         export PATH=$PATH:~/.local/bin
         name=${{ steps.asset.outputs.name }}
         mkdir $name
-        cp README.md LICENSE $name
+        cp README.md LICENSE _$(basename $PWD) $name
         mv "$(which $(basename $PWD))" $name
         zip -r $name.zip $name
       env:
