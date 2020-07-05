@@ -1,6 +1,5 @@
 module Option where
 
-import Data.Semigroup ((<>))
 import Data.Version (showVersion)
 import Options.Applicative
 

@@ -6,7 +6,6 @@ import Data.Char (isSpace)
 import Data.List (isSuffixOf, intercalate, transpose)
 import qualified Data.Map as Map
 import Data.Maybe
-import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import Data.Set ((\\))
 import qualified Database.SQLite.Simple as SQLite
