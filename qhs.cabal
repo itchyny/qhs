@@ -6,14 +6,15 @@ license:                MIT
 license-file:           LICENSE
 category:               Console
 build-type:             Simple
-cabal-version:          >=1.6
-synopsis:               Command line processing tool qhs, SQL queries on CSV and TSV files.
+cabal-version:          >=1.10
+synopsis:               Command line tool qhs, SQL queries on CSV and TSV files.
 description:            This is a Haskell port of q command (https://github.com/harelba/q).
 
 executable qhs
   hs-source-dirs:       src
   main-is:              Main.hs
   ghc-options:          -threaded -Wall
+  default-language:     Haskell2010
   other-modules:        Parser
                       , SQL
                       , SQLType
@@ -21,21 +22,21 @@ executable qhs
                       , Option
                       , Paths_qhs
   build-depends:        base >= 4.9 && < 5
-                      , containers
-                      , split
-                      , syb >= 0.4
-                      , sqlite-simple
-                      , simple-sql-parser >= 0.5.0
-                      , optparse-applicative
                       , bytestring
-                      , text
+                      , containers
                       , cryptonite
+                      , optparse-applicative
+                      , simple-sql-parser >= 0.6.0
+                      , split
+                      , sqlite-simple
+                      , syb >= 0.4
+                      , text
                       , zlib
 
 test-suite spec
-  hs-source-dirs:       test
+  hs-source-dirs:       test,src
   main-is:              Spec.hs
-  ghc-options:          -threaded -Werror -Wall
+  ghc-options:          -threaded -Wall
   other-modules:        Parser
                       , SQL
                       , SQLType
@@ -47,15 +48,20 @@ test-suite spec
                       , FileSpec
                       , MainSpec
   type:                 exitcode-stdio-1.0
-  hs-source-dirs:       test,src
+  default-language:     Haskell2010
   build-depends:        base >= 4.9 && < 5
+                      , bytestring
                       , containers
-                      , split
-                      , syb >= 0.4
-                      , sqlite-simple
-                      , simple-sql-parser >= 0.5.0
+                      , cryptonite
                       , hspec
+                      , optparse-applicative
                       , process
+                      , simple-sql-parser >= 0.6.0
+                      , split
+                      , sqlite-simple
+                      , syb >= 0.4
+                      , text
+                      , zlib
 
 source-repository head
   type:     git
