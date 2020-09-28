@@ -21,7 +21,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@main
     - name: Install stack
       run: command -v stack || curl -sSL https://get.haskellstack.org/ | sh
     - name: Build
