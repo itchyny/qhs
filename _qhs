@@ -3,7 +3,7 @@
 _qhs ()
 {
   _arguments -C \
-    '(-H --skip-header)'{-H,--skip-header}'[skip the header row]' \
+    '(-H --skip-header)'{-H,--skip-header}'[use the first row for column names]' \
     '(-O --output-header)'{-O,--output-header}'[output the header line]' \
     '(-d --delimiter)'{-d,--delimiter}'[field delimiter]' \
     '(-t --tab-delimited-output)'{-t,--tab-delimited-output}'[use tab for field delimiter]' \

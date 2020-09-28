@@ -89,7 +89,8 @@ Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER]
 Available options:
   -h,--help                Show this help text
   -v,--version             Show the version of the command.
-  -H,--skip-header         Skip the header row.
+  -H,--skip-header         Skip the header row for row input and use it for
+                           column names instead.
   -O,--output-header       Output the header line.
   -d,--delimiter DELIMITER Field delimiter. If not specified, automatically
                            detected.
