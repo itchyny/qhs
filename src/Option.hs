@@ -22,7 +22,7 @@ options :: Parser Option
 options = Option
   <$> switch (long "skip-header"
              <> short 'H'
-             <> help "Skip the header row.")
+             <> help "Skip the header row for row input and use it for column names instead.")
   <*> switch (long "output-header"
              <> short 'O'
              <> help "Output the header line.")
