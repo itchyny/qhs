@@ -27,9 +27,9 @@ main = runCommand =<< execParser opts
 
 runCommand :: Option.Option -> IO ()
 runCommand opts = do
+  queryTableMap <- parseQuery =<< fetchQuery opts
   conn <- SQL.open ":memory:"
-  maybeQueryTableMap <- parseQuery =<< fetchQuery opts
-  forM_ maybeQueryTableMap $ runQuery opts conn
+  runQuery opts conn queryTableMap
   SQL.close conn
 
 runQuery :: Option.Option -> SQLite.Connection -> (String, Parser.TableNameMap) -> IO ()
@@ -46,7 +46,9 @@ runQuery opts conn (query, tableMap) = do
          when (Option.outputHeader opts) $
            putStrLn $ intercalate outputDelimiter $ cs
          mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
-       Left err -> putStrLn err
+       Left err -> do
+         hPutStrLn stderr err
+         exitFailure
 
 fetchQuery :: Option.Option -> IO String
 fetchQuery opts = do
@@ -62,23 +64,23 @@ fetchQuery opts = do
     exitFailure
   return query
 
-parseQuery :: String -> IO (Maybe (String, Parser.TableNameMap))
+parseQuery :: String -> IO (String, Parser.TableNameMap)
 parseQuery qs = do
   let (query, tableMap) = Parser.replaceTableNames qs
   case Parser.extractTableNames query "<<query>>" of
        Left err -> do
-         putStrLn $ Parser.replaceBackTableNames tableMap $ Parser.errorString err
-         return Nothing
+         hPutStrLn stderr $ Parser.replaceBackTableNames tableMap $ Parser.errorString err
+         exitFailure
        Right tableNames -> do
          let xs = Set.fromList tableNames
          let ys = Set.fromList (Map.elems tableMap)
          if xs == ys
-            then return $ Just (query, tableMap)
+            then return (query, tableMap)
             else do
-              putStrLn "Invalid table name:"
-              putStrLn $ "  " ++ show (Set.union (xs \\ ys) (ys \\ xs))
-              putStrLn "Probably a bug of qhs. Please submit a issue report."
-              return Nothing
+              hPutStrLn stderr "Invalid table name:"
+              hPutStrLn stderr $ "  " ++ show (Set.union (xs \\ ys) (ys \\ xs))
+              hPutStrLn stderr "Probably a bug of qhs. Please submit a issue report."
+              exitFailure
 
 readFilesCreateTables :: Option.Option -> SQLite.Connection -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
