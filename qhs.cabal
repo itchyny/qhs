@@ -8,7 +8,7 @@ category:               Console
 build-type:             Simple
 cabal-version:          >=1.10
 synopsis:               Command line tool qhs, SQL queries on CSV and TSV files.
-description:            This is a Haskell port of q command (https://github.com/harelba/q).
+description:            This is a Haskell port of q command <https://github.com/harelba/q>.
 
 executable qhs
   hs-source-dirs:       src
@@ -28,16 +28,16 @@ executable qhs
                       , File
                       , Option
                       , Paths_qhs
-  build-depends:        base >= 4.9 && < 5
+  build-depends:        base
                       , bytestring
                       , containers
                       , cryptonite
                       , extra
                       , optparse-applicative
-                      , simple-sql-parser >= 0.6.0
+                      , simple-sql-parser >= 0.8.0
                       , split
                       , sqlite-simple
-                      , syb >= 0.4
+                      , syb
                       , text
                       , zlib
 
@@ -64,7 +64,7 @@ test-suite spec
                       , SQLSpec
                       , FileSpec
                       , MainSpec
-  build-depends:        base >= 4.9 && < 5
+  build-depends:        base
                       , bytestring
                       , containers
                       , cryptonite
@@ -72,10 +72,10 @@ test-suite spec
                       , hspec
                       , optparse-applicative
                       , process
-                      , simple-sql-parser >= 0.6.0
+                      , simple-sql-parser >= 0.8.0
                       , split
                       , sqlite-simple
-                      , syb >= 0.4
+                      , syb
                       , text
                       , zlib
 
