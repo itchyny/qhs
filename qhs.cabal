@@ -53,6 +53,7 @@ test-suite spec
                       , bytestring
                       , containers
                       , cryptonite
+                      , extra
                       , hspec
                       , optparse-applicative
                       , process

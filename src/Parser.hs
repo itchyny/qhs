@@ -6,6 +6,7 @@ import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
 import Data.List (unfoldr)
 import qualified Data.Map as Map
+import qualified Data.Text as Text
 import Data.Tuple (swap)
 import qualified Language.SQL.SimpleSQL.Dialect as Dialect
 import qualified Language.SQL.SimpleSQL.Parse as Parse
@@ -62,10 +63,10 @@ replaceBackTableNames tableMap = replaceQueryWithTableMap reverseMap
 -- | Extracts the table names using the rigid SQL parser.
 extractTableNames :: String -> FilePath -> Either Parse.ParseError [String]
 extractTableNames query path = everything (++) ([] `mkQ` tableNames)
-                            <$> Parse.parseQueryExpr Dialect.mysql path Nothing query
+                            <$> Parse.parseQueryExpr Dialect.mysql (Text.pack path) Nothing (Text.pack query)
   where tableNames (Syntax.TRSimple (name:_)) = fromName name
         tableNames _ = []
-        fromName (Syntax.Name _ name) = [name]
+        fromName (Syntax.Name _ name) = [Text.unpack name]
 
 errorString :: Parse.ParseError -> String
-errorString = Parse.peFormattedError
+errorString = Text.unpack . Parse.prettyError

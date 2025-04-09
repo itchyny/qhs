@@ -1,8 +1,9 @@
 module ParserSpec (spec) where
 
-import Data.Either
+import Data.Either (isLeft)
+import Data.Either.Extra (fromRight')
 import qualified Data.Map as Map
-import Test.Hspec (Spec, describe, it, shouldBe, shouldSatisfy)
+import Test.Hspec (Spec, describe, it, shouldBe)
 
 import Parser
 
@@ -113,13 +114,13 @@ extractTableNamesSpec =
   describe "extractTableNames" $ do
 
     it "should extract table name" $ do
-      extractTableNames "SELECT * FROM table0 WHERE c0 > 0" "" `shouldBe` Right [ "table0" ]
-      extractTableNames "select * from table0 where c0 > 0" "" `shouldBe` Right [ "table0" ]
+      fromRight' (extractTableNames "SELECT * FROM table0 WHERE c0 > 0" "") `shouldBe` [ "table0" ]
+      fromRight' (extractTableNames "select * from table0 where c0 > 0" "") `shouldBe` [ "table0" ]
 
     it "should extract multiple table names" $ do
-      extractTableNames "SELECT * FROM table0 JOIN table1 ON c1 = c2 WHERE c0 > 0" "" `shouldBe` Right [ "table0", "table1" ]
-      extractTableNames "select * from table0 join table1 on c1 = c2 where c0 > 0" "" `shouldBe` Right [ "table0", "table1" ]
+      fromRight' (extractTableNames "SELECT * FROM table0 JOIN table1 ON c1 = c2 WHERE c0 > 0" "") `shouldBe` [ "table0", "table1" ]
+      fromRight' (extractTableNames "select * from table0 join table1 on c1 = c2 where c0 > 0" "") `shouldBe` [ "table0", "table1" ]
 
     it "should return a parse error" $ do
-      extractTableNames "SELECT ** FROM table0 WHERE c0 > 0" "" `shouldSatisfy` isLeft
-      extractTableNames "SELECT * FROM table0 WHERE > 0" "" `shouldSatisfy` isLeft
+      isLeft (extractTableNames "SELECT ** FROM table0 WHERE c0 > 0" "") `shouldBe` True
+      isLeft (extractTableNames "SELECT * FROM table0 WHERE > 0" "") `shouldBe` True
