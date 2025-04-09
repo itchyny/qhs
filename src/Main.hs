@@ -85,7 +85,7 @@ readFilesCreateTables :: Option.Option -> SQLite.Connection -> Parser.TableNameM
 readFilesCreateTables opts conn tableMap =
   forM_ (Map.toList tableMap) \(path, name) -> do
     let path' = unquote path
-    handle <- openFile (if path' == "-" then "/dev/stdin" else path') ReadMode
+    handle <- if path' == "-" then return stdin else openFile path' ReadMode
     let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path' }
     (columns, body) <- File.readFromFile opts' handle
     when (null columns) $ do
