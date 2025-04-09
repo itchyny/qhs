@@ -17,7 +17,7 @@ import File qualified
 import Option
 import Parser qualified
 import SQL qualified
-import SQLType qualified
+import SQLType
 
 main :: IO ()
 main = runCommand =<< execParser opts
@@ -107,9 +107,9 @@ readFilesCreateTables opts conn tableMap =
 createTable :: SQLite.Connection -> String -> String -> [String] -> [[String]] -> IO ()
 createTable conn name path columns body = do
   let probablyNumberColumn =
-        [ all isJust [ readMaybe x :: Maybe Float | x <- xs, not (all isSpace x) ]
-                                                  | xs <- transpose body ]
-  let types = [ if b then SQLType.SQLInt else SQLType.SQLChar | b <- probablyNumberColumn ]
+        [ all isJust [ readMaybe x :: Maybe Double | x <- xs, not (all isSpace x) ]
+                                                   | xs <- transpose body ]
+  let types = [ if b then SQLInt else SQLChar | b <- probablyNumberColumn ]
   ret <- SQL.createTable conn name columns types
   case ret of
        Just err -> do

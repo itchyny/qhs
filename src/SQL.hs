@@ -21,28 +21,18 @@ close = SQLite.close
 createTable :: SQLite.Connection -> String -> [String] -> [SQLType] -> IO (Maybe String)
 createTable conn name columns types = do
   let stmt = "CREATE TABLE " ++ sqlQuote name ++ " "
-           ++ tupled (zipWith (curry quote) types columns) ++ ";"
+           ++ tupled (zipWith quote types columns) ++ ";"
   e <- try $ SQLite.execute_ conn (fromString stmt)
   return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
-    where quote (t, c) = sqlQuote c ++ " " ++ showType t
+    where quote t c = sqlQuote c ++ " " ++ show t
 
 -- | Inserts a row into a table.
 insertRow :: SQLite.Connection -> String -> [String] -> [SQLType] -> [String] -> IO (Maybe String)
 insertRow conn name columns types entry = do
   let stmt = "INSERT INTO " ++ sqlQuote name ++ tupled (map sqlQuote columns)
-           ++ " VALUES " ++ tupled (zipWith (curry quote) types entry) ++ ";"
-  e <- try $ SQLite.execute_ conn (fromString stmt)
+           ++ " VALUES " ++ tupled (replicate (length columns) "?") ++ ";"
+  e <- try $ SQLite.execute conn (fromString stmt) (zip types entry)
   return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
-    where quote (t, "") | isDigitType t = "NULL"
-          quote (t, cs) | isDigitType t = cs
-                        | otherwise = "'" ++ toSQLString cs ++ "'"
-          isDigitType SQLInt = True
-          isDigitType _ = False
-
-toSQLString :: String -> String
-toSQLString "" = ""
-toSQLString ('\'':xs) = '\'':'\'':toSQLString xs
-toSQLString (x:xs) = x : toSQLString xs
 
 -- | Executes a SQL statement.
 execute :: SQLite.Connection -> String -> IO (Either String ([String], [[Any]]))

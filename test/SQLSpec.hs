@@ -44,7 +44,7 @@ tableSpec =
       let entries = [ ["c0", "2", "c2", "3"],
                       ["d0", "", "d2", "2"],
                       ["f0", "3", "f2", ""],
-                      ["e0", "", "e2", "4"] ]
+                      ["e0", "", "e2", "4.3"] ]
       forM_ entries $ SQL.insertRow conn "test_table" columns types
       ret0 <- SQL.execute conn "SELECT * FROM test_table"
       ret0 `shouldBe` Right (fromColumnsAndEntries columns entries)
@@ -53,7 +53,7 @@ tableSpec =
       ret2 <- SQL.execute conn "SELECT avg(num) FROM test_table"
       ret2 `shouldBe` Right (fromColumnsAndEntries ["avg(num)"] [["2.5"]])
       ret3 <- SQL.execute conn "SELECT avg(baz) FROM test_table"
-      ret3 `shouldBe` Right (fromColumnsAndEntries ["avg(baz)"] [["3.0"]])
+      ret3 `shouldBe` Right (fromColumnsAndEntries ["avg(baz)"] [["3.1"]])
       SQL.close conn
 
     it "can create a table when name and column names contain spaces" $ do

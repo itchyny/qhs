@@ -1,23 +1,29 @@
-module SQLType (SQLType(..), showType, Any, fromColumnsAndEntries) where
+module SQLType (SQLType(..), Any, fromColumnsAndEntries) where
 
+import Control.Applicative ((<|>))
+import Data.Maybe (fromMaybe)
 import Data.String (IsString(..))
 import Data.Text qualified as Text
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromField
 import Database.SQLite.Simple.Internal (Field(..))
 import Database.SQLite.Simple.Ok
+import Database.SQLite.Simple.ToField
 import Text.Read (readMaybe)
 
 data SQLType = SQLChar | SQLInt
+             deriving Eq
 
-showType :: SQLType -> String
-showType t =
-  case t of
-    SQLChar -> "CHAR"
-    SQLInt -> "INTEGER"
+instance Show SQLType where
+  show SQLChar = "CHAR"
+  show SQLInt = "INTEGER"
+
+instance ToField (SQLType, String) where
+  toField (SQLChar, cs) = SQLText $ Text.pack cs
+  toField (SQLInt, cs) = maybe SQLNull SQLFloat $ readMaybe cs
 
 data Any = AnyDouble Double | AnyInt Int | AnyString String | AnyNull
-         deriving (Eq)
+         deriving Eq
 
 instance FromField Any where
   fromField (Field (SQLFloat d) _) = Ok . AnyDouble $ d
@@ -27,12 +33,10 @@ instance FromField Any where
   fromField f = returnError ConversionFailed f "expecting SQLText column type"
 
 instance IsString Any where
-  fromString s =
-    case readMaybe s of
-         Just i -> AnyInt i
-         Nothing -> case readMaybe s of
-                         Just d -> AnyDouble d
-                         Nothing -> if s == "" then AnyNull else AnyString s
+  fromString "" = AnyNull
+  fromString s = fromMaybe (AnyString s) $
+                   AnyInt <$> readMaybe s <|>
+                   AnyDouble <$> readMaybe s
 
 instance Show Any where
   show (AnyDouble d) = show d
