@@ -83,9 +83,10 @@ The command respects the behaviour of the original [q](https://github.com/harelb
  $ qhs --help
 qhs - SQL queries on CSV and TSV files
 
-Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER]
-           [-t|--tab-delimited] [-D|--output-delimiter OUTPUT_DELIMITER]
-           [-T|--tab-delimited-output] [-k|--keep-leading-whitespace]
+Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER] 
+           [-t|--tab-delimited] [-p|--pipe-delimited] 
+           [-D|--output-delimiter OUTPUT_DELIMITER] [-T|--tab-delimited-output] 
+           [-P|--pipe-delimited-output] [-k|--keep-leading-whitespace] 
            [-z|--gzipped] [-q|--query-filename QUERY_FILENAME] [QUERY]
 
 Available options:
@@ -97,11 +98,14 @@ Available options:
   -d,--delimiter DELIMITER Field delimiter. If not specified, automatically
                            detected.
   -t,--tab-delimited       Same as -d $'\t'.
+  -p,--pipe-delimited      Same as -d '|'.
   -D,--output-delimiter OUTPUT_DELIMITER
                            Field delimiter for output. If not specified, the
                            argument of -d DELIMITER is used.
   -T,--tab-delimited-output
                            Same as -D $'\t'.
+  -P,--pipe-delimited-output
+                           Same as -D '|'.
   -k,--keep-leading-whitespace
                            Keep leading whitespace in values. The leading
                            whitespaces are stripped off by default.

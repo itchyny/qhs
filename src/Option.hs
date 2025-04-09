@@ -12,8 +12,10 @@ data Option =
     outputHeader :: Bool,
     delimiter :: Maybe String,
     tabDelimited :: Bool,
+    pipeDelimited :: Bool,
     outputDelimiter :: Maybe String,
     tabDelimitedOutput :: Bool,
+    pipeDelimitedOutput :: Bool,
     keepLeadingWhiteSpace :: Bool,
     gzipped :: Bool,
     queryFile :: Maybe String,
@@ -36,6 +38,9 @@ options = Option
   <*> switch (long "tab-delimited"
            <> short 't'
            <> help "Same as -d $'\\t'.")
+  <*> switch (long "pipe-delimited"
+           <> short 'p'
+           <> help "Same as -d '|'.")
   <*> optional (strOption (long "output-delimiter"
                         <> short 'D'
                         <> metavar "OUTPUT_DELIMITER"
@@ -43,6 +48,9 @@ options = Option
   <*> switch (long "tab-delimited-output"
            <> short 'T'
            <> help "Same as -D $'\\t'.")
+  <*> switch (long "pipe-delimited-output"
+           <> short 'P'
+           <> help "Same as -D '|'.")
   <*> switch (long "keep-leading-whitespace"
            <> short 'k'
            <> help "Keep leading whitespace in values. The leading whitespaces are stripped off by default.")

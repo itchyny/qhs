@@ -1,1 +1,1 @@
-qhs -H -O -D '|' "SELECT * FROM basic.csv"
+qhs -H -O -D ';' "SELECT * FROM basic.csv"

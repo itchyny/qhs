@@ -1,1 +1,1 @@
-qhs -t -T -H "SELECT * FROM tab.csv"
+qhs -t -H "SELECT * FROM tab.csv"

@@ -18,7 +18,9 @@ readFromFile opts handle = do
        then Char8.unpack . GZip.decompress <$> ByteString.hGetContents handle
        else hGetContents handle
   let (headLine : secondLine : _) = contents ++ [ "", "" ]
-  let delimiter = guard opts.tabDelimited *> Just "\t" <|> opts.delimiter
+  let delimiter = guard opts.tabDelimited *> Just "\t" <|>
+                  guard opts.pipeDelimited *> Just "|" <|>
+                  opts.delimiter
   when (maybe False ((/=1) . length) delimiter) $ do
     hPutStrLn stderr "Invalid delimiter."
     exitFailure

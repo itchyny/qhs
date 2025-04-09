@@ -38,10 +38,12 @@ runQuery opts conn (query, tableMap) = do
   case ret of
        Right (cs, rs) -> do
          let outputDelimiter =
-               fromMaybe " " $ guard opts.tabDelimitedOutput *> Just "\t"
-                            <|> opts.outputDelimiter
-                            <|> guard opts.tabDelimited *> Just "\t"
-                            <|> opts.delimiter
+               fromMaybe " " $ guard opts.tabDelimitedOutput *> Just "\t" <|>
+                               guard opts.pipeDelimitedOutput *> Just "|" <|>
+                               opts.outputDelimiter <|>
+                               guard opts.tabDelimited *> Just "\t" <|>
+                               guard opts.pipeDelimited *> Just "|" <|>
+                               opts.delimiter
          when opts.outputHeader $
            putStrLn $ intercalate outputDelimiter cs
          mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
