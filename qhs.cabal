@@ -29,6 +29,7 @@ executable qhs
                       , bytestring
                       , containers
                       , cryptonite
+                      , extra
                       , optparse-applicative
                       , simple-sql-parser >= 0.6.0
                       , split

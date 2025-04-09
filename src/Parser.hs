@@ -5,12 +5,14 @@ import Data.ByteString.Char8 qualified as Char8
 import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
 import Data.List (unfoldr)
+import Data.List.NonEmpty (iterate, tail)
 import Data.Map qualified as Map
 import Data.Text qualified as Text
 import Data.Tuple (swap)
 import Language.SQL.SimpleSQL.Dialect qualified as Dialect
 import Language.SQL.SimpleSQL.Parse qualified as Parse
 import Language.SQL.SimpleSQL.Syntax qualified as Syntax
+import Prelude hiding (iterate, tail)
 
 type TableNameMap = Map.Map String String
 
