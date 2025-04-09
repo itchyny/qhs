@@ -1,16 +1,18 @@
 #compdef qhs
 
-_qhs ()
+_qhs()
 {
-  _arguments -C \
+  _arguments -s -S \
     '(-H --skip-header)'{-H,--skip-header}'[use the first row for column names]' \
     '(-O --output-header)'{-O,--output-header}'[output the header line]' \
-    '(-d --delimiter)'{-d,--delimiter}'[field delimiter]' \
-    '(-t --tab-delimited-output)'{-t,--tab-delimited-output}'[use tab for field delimiter]' \
+    '(-d --delimiter -t --tab-delimited)'{-d,--delimiter=}'[field delimiter]:DELIMITER' \
+    '(-d --delimiter -t --tab-delimited)'{-t,--tab-delimited}'[use tab for field delimiter]' \
+    '(-D --output-delimiter -T --tab-delimited-output)'{-D,--output-delimiter=}'[field delimiter of output]:OUTPUT_DELIMITER' \
+    '(-D --output-delimiter -T --tab-delimited-output)'{-T,--tab-delimited-output}'[use tab for field delimiter of output]' \
     '(-k --keep-leading-whitespace)'{-k,--keep-leading-whitespace}'[keep leading whitespace in values]' \
     '(-z --gzipped)'{-z,--gzipped}'[assuming the gzipped input]' \
-    '(-q --query-filename)'{-q,--query-filename}'[read query from file]' \
-    '(-v --version)'{-v,--version}'[print version]' \
-    '(-h --help)'{-h,--help}'[print help]' \
-    && ret=0
+    '(-q --query-filename 1)'{-q,--query-filename=}'[read query from file]:QUERY_FILENAME:_files' \
+    '(- 1)'{-v,--version}'[print version]' \
+    '(- 1)'{-h,--help}'[print help]' \
+    '1: :_guard "^-*" "SQL query"'
 }
