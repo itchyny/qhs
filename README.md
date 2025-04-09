@@ -1,11 +1,13 @@
-# qhs [![CI Status](https://github.com/itchyny/qhs/workflows/CI/badge.svg)](https://github.com/itchyny/qhs/actions)
+# qhs
+[![CI Status](https://github.com/itchyny/qhs/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/itchyny/qhs/actions?query=branch:main)
+
 ### SQL queries on CSV and TSV files
 This is a Haskell implementation of [q](https://github.com/harelba/q) command.
 
 ## Installation
 ### Homebrew
 ```shell
- $ brew install itchyny/tap/qhs
+brew install itchyny/tap/qhs
 ```
 
 ### Build with stack
@@ -109,7 +111,7 @@ Available options:
 ```
 
 ## Author
-itchyny (https://github.com/itchyny)
+itchyny (<https://github.com/itchyny>)
 
 ## License
 This software is released under the MIT License, see LICENSE.
