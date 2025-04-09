@@ -1,16 +1,16 @@
 module Parser (replaceTableNames, roughlyExtractTableNames, replaceBackTableNames, extractTableNames, errorString, TableNameMap) where
 
-import qualified Crypto.Hash as Crypto
-import qualified Data.ByteString.Char8 as Char8
+import Crypto.Hash qualified as Crypto
+import Data.ByteString.Char8 qualified as Char8
 import Data.Char (isNumber, isSpace, toUpper)
 import Data.Generics (everything, mkQ)
 import Data.List (unfoldr)
-import qualified Data.Map as Map
-import qualified Data.Text as Text
+import Data.Map qualified as Map
+import Data.Text qualified as Text
 import Data.Tuple (swap)
-import qualified Language.SQL.SimpleSQL.Dialect as Dialect
-import qualified Language.SQL.SimpleSQL.Parse as Parse
-import qualified Language.SQL.SimpleSQL.Syntax as Syntax
+import Language.SQL.SimpleSQL.Dialect qualified as Dialect
+import Language.SQL.SimpleSQL.Parse qualified as Parse
+import Language.SQL.SimpleSQL.Syntax qualified as Syntax
 
 type TableNameMap = Map.Map String String
 

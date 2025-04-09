@@ -3,7 +3,7 @@ module Option where
 import Data.Version (showVersion)
 import Options.Applicative
 
-import qualified Paths_qhs as QHS
+import Paths_qhs qualified as QHS
 
 -- | Command options
 data Option = Option { skipHeader :: Bool,

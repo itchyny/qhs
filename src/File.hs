@@ -1,15 +1,15 @@
 module File where
 
-import qualified Codec.Compression.GZip as GZip
+import Codec.Compression.GZip qualified as GZip
 import Control.Applicative ((<|>))
 import Control.Monad (guard, when)
-import qualified Data.ByteString.Lazy as ByteString
-import qualified Data.ByteString.Lazy.Char8 as Char8
+import Data.ByteString.Lazy qualified as ByteString
+import Data.ByteString.Lazy.Char8 qualified as Char8
 import Data.Char (isSpace)
 import System.Exit (exitFailure)
 import System.IO
 
-import qualified Option as Option
+import Option qualified
 
 readFromFile :: Option.Option -> Handle -> IO ([String], [[String]])
 readFromFile opts handle = do

@@ -4,8 +4,8 @@ import Control.Exception (try, SomeException)
 import Control.Monad (forM)
 import Data.List (intersperse)
 import Data.String (fromString)
-import qualified Data.Text as T
-import qualified Database.SQLite.Simple as SQLite
+import Data.Text qualified as Text
+import Database.SQLite.Simple qualified as SQLite
 
 import SQLType
 
@@ -48,10 +48,10 @@ toSQLString (x:xs) = x : toSQLString xs
 execute :: SQLite.Connection -> String -> IO (Either String ([String], [[Any]]))
 execute conn query = do
   e <- try $ SQLite.query_ conn (fromString query)
-  columns <- SQLite.withStatement conn (fromString query) $ \stmt -> do
+  columns <- SQLite.withStatement conn (fromString query) \stmt -> do
     cnt <- toInteger <$> SQLite.columnCount stmt
-    forM [0..cnt-1] $ \i ->
-      T.unpack <$> SQLite.columnName stmt (fromInteger i)
+    forM [0..cnt-1] \i ->
+      Text.unpack <$> SQLite.columnName stmt (fromInteger i)
   return $ either (Left . (show :: SomeException -> String)) (Right . (,) columns) $ e
 
 sqlQuote :: String -> String

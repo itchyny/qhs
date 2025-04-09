@@ -1,24 +1,23 @@
 module Main where
 
-import Control.Applicative
+import Control.Applicative ((<|>))
 import Control.Monad (forM_, guard, when)
 import Data.Char (isSpace)
 import Data.List (isSuffixOf, intercalate, transpose)
-import qualified Data.Map as Map
-import Data.Maybe
-import qualified Data.Set as Set
-import Data.Set ((\\))
-import qualified Database.SQLite.Simple as SQLite
+import Data.Map qualified as Map
+import Data.Maybe (fromMaybe, isJust)
+import Data.Set as Set ((\\), fromList, union)
+import Database.SQLite.Simple qualified as SQLite
 import Options.Applicative (execParser, helper, info, fullDesc, header)
 import System.Exit (exitFailure)
 import System.IO
 import Text.Read (readMaybe)
 
-import qualified File as File
-import qualified Option as Option
-import qualified Parser as Parser
-import qualified SQL as SQL
-import qualified SQLType as SQLType
+import File qualified
+import Option qualified
+import Parser qualified
+import SQL qualified
+import SQLType qualified
 
 main :: IO ()
 main = runCommand =<< execParser opts
@@ -84,7 +83,7 @@ parseQuery qs = do
 
 readFilesCreateTables :: Option.Option -> SQLite.Connection -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
-  forM_ (Map.toList tableMap) $ \(path, name) -> do
+  forM_ (Map.toList tableMap) \(path, name) -> do
     let path' = unquote path
     handle <- openFile (if path' == "-" then "/dev/stdin" else path') ReadMode
     let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path' }
@@ -116,5 +115,5 @@ createTable conn name path columns body = do
          putStrLn $ "  " ++ path ++ " (" ++ name ++ ") " ++ show columns
          putStrLn err
        Nothing ->
-         forM_ body $ \entry -> do
+         forM_ body \entry -> do
            mapM_ (hPutStrLn stderr) =<< SQL.insertRow conn name columns types entry

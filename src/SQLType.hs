@@ -1,7 +1,7 @@
 module SQLType (SQLType(..), showType, Any, fromColumnsAndEntries) where
 
 import Data.String (IsString(..))
-import qualified Data.Text as T
+import Data.Text qualified as Text
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromField
 import Database.SQLite.Simple.Internal (Field(..))
@@ -22,7 +22,7 @@ data Any = AnyDouble Double | AnyInt Int | AnyString String | AnyNull
 instance FromField Any where
   fromField (Field (SQLFloat d) _) = Ok . AnyDouble $ d
   fromField (Field (SQLInteger i) _) = Ok . AnyInt . fromIntegral $ i
-  fromField (Field (SQLText s) _) = Ok . AnyString . T.unpack $ s
+  fromField (Field (SQLText s) _) = Ok . AnyString . Text.unpack $ s
   fromField (Field SQLNull _) = Ok AnyNull
   fromField f = returnError ConversionFailed f "expecting SQLText column type"
 
