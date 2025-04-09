@@ -1,7 +1,7 @@
 module Main where
 
 import Control.Applicative ((<|>))
-import Control.Monad (forM_, guard, when)
+import Control.Monad (forM_, guard, when, unless)
 import Data.Char (isSpace)
 import Data.List (isSuffixOf, intercalate, transpose)
 import Data.Map qualified as Map
@@ -43,7 +43,7 @@ runQuery opts conn (query, tableMap) = do
                             <|> guard (Option.tabDelimited opts) *> Just "\t"
                             <|> Option.delimiter opts
          when (Option.outputHeader opts) $
-           putStrLn $ intercalate outputDelimiter $ cs
+           putStrLn $ intercalate outputDelimiter cs
          mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
        Left err -> do
          hPutStrLn stderr err
@@ -88,7 +88,7 @@ readFilesCreateTables opts conn tableMap =
     handle <- openFile (if path' == "-" then "/dev/stdin" else path') ReadMode
     let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path' }
     (columns, body) <- File.readFromFile opts' handle
-    when (length columns == 0) $ do
+    when (null columns) $ do
       hPutStrLn stderr $ if Option.skipHeader opts
                             then "Header line is expected but missing in file " ++ path
                             else "Warning - data is empty"
@@ -96,7 +96,7 @@ readFilesCreateTables opts conn tableMap =
     when (any (elem ',') columns) $ do
       hPutStrLn stderr "Column name cannot contain commas"
       exitFailure
-    when (length columns >= 1) $
+    unless (null columns) $
       createTable conn name path columns body
     hClose handle
   where unquote (x:xs@(_:_)) | x `elem` "\"'`" && x == last xs = init xs

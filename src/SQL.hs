@@ -2,7 +2,7 @@ module SQL (open, close, createTable, insertRow, execute) where
 
 import Control.Exception (try, SomeException)
 import Control.Monad (forM)
-import Data.List (intersperse)
+import Data.List (intercalate)
 import Data.String (fromString)
 import Data.Text qualified as Text
 import Database.SQLite.Simple qualified as SQLite
@@ -21,7 +21,7 @@ close = SQLite.close
 createTable :: SQLite.Connection -> String -> [String] -> [SQLType] -> IO (Maybe String)
 createTable conn name columns types = do
   let stmt = "CREATE TABLE " ++ sqlQuote name ++ " "
-           ++ tupled (map quote (zip types columns)) ++ ";"
+           ++ tupled (zipWith (curry quote) types columns) ++ ";"
   e <- try $ SQLite.execute_ conn (fromString stmt)
   return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
     where quote (t, c) = sqlQuote c ++ " " ++ showType t
@@ -30,7 +30,7 @@ createTable conn name columns types = do
 insertRow :: SQLite.Connection -> String -> [String] -> [SQLType] -> [String] -> IO (Maybe String)
 insertRow conn name columns types entry = do
   let stmt = "INSERT INTO " ++ sqlQuote name ++ tupled (map sqlQuote columns)
-           ++ " VALUES " ++ tupled (map quote (zip types entry)) ++ ";"
+           ++ " VALUES " ++ tupled (zipWith (curry quote) types entry) ++ ";"
   e <- try $ SQLite.execute_ conn (fromString stmt)
   return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
     where quote (t, "") | isDigitType t = "NULL"
@@ -52,10 +52,10 @@ execute conn query = do
     cnt <- toInteger <$> SQLite.columnCount stmt
     forM [0..cnt-1] \i ->
       Text.unpack <$> SQLite.columnName stmt (fromInteger i)
-  return $ either (Left . (show :: SomeException -> String)) (Right . (,) columns) $ e
+  return $ either (Left . (show :: SomeException -> String)) (Right . (,) columns) e
 
 sqlQuote :: String -> String
 sqlQuote xs = "`" ++ xs ++ "`"
 
 tupled :: [String] -> String
-tupled xs = "(" ++ concat (intersperse ", " xs) ++ ")"
+tupled xs = "(" ++ intercalate ", " xs ++ ")"

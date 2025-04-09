@@ -13,9 +13,9 @@ import Option qualified
 
 readFromFile :: Option.Option -> Handle -> IO ([String], [[String]])
 readFromFile opts handle = do
-  contents <- joinMultiLines <$> lines <$>
+  contents <- joinMultiLines . lines <$>
     if Option.gzipped opts
-       then Char8.unpack <$> GZip.decompress <$> ByteString.hGetContents handle
+       then Char8.unpack . GZip.decompress <$> ByteString.hGetContents handle
        else hGetContents handle
   let (headLine : secondLine : _) = contents ++ [ "", "" ]
   let delimiter = guard (Option.tabDelimited opts) *> Just "\t" <|> Option.delimiter opts
