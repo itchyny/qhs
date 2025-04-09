@@ -34,22 +34,21 @@ runCommand opts = do
 runQuery :: Option -> SQLite.Connection -> (String, Parser.TableNameMap) -> IO ()
 runQuery opts conn (query, tableMap) = do
   readFilesCreateTables opts conn tableMap
-  ret <- SQL.execute conn query
-  case ret of
-       Right (cs, rs) -> do
-         let outputDelimiter =
-               fromMaybe " " $ guard opts.tabDelimitedOutput *> Just "\t" <|>
-                               guard opts.pipeDelimitedOutput *> Just "|" <|>
-                               opts.outputDelimiter <|>
-                               guard opts.tabDelimited *> Just "\t" <|>
-                               guard opts.pipeDelimited *> Just "|" <|>
-                               opts.delimiter
-         when opts.outputHeader $
-           putStrLn $ intercalate outputDelimiter cs
-         mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
-       Left err -> do
-         hPutStrLn stderr err
-         exitFailure
+  SQL.execute conn query >>= \case
+    Right (cs, rs) -> do
+      let outputDelimiter =
+            fromMaybe " " $ guard opts.tabDelimitedOutput *> Just "\t" <|>
+                            guard opts.pipeDelimitedOutput *> Just "|" <|>
+                            opts.outputDelimiter <|>
+                            guard opts.tabDelimited *> Just "\t" <|>
+                            guard opts.pipeDelimited *> Just "|" <|>
+                            opts.delimiter
+      when opts.outputHeader $
+        putStrLn $ intercalate outputDelimiter cs
+      mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
+    Left err -> do
+      hPrint stderr err
+      exitFailure
 
 fetchQuery :: Option -> IO String
 fetchQuery opts = do
@@ -110,12 +109,16 @@ createTable conn name path columns body = do
         [ all isJust [ readMaybe x :: Maybe Double | x <- xs, not (all isSpace x) ]
                                                    | xs <- transpose body ]
   let types = [ if b then SQLInt else SQLChar | b <- probablyNumberColumn ]
-  ret <- SQL.createTable conn name columns types
-  case ret of
-       Just err -> do
-         putStrLn "Error on creating a new table:"
-         putStrLn $ "  " ++ path ++ " (" ++ name ++ ") " ++ show columns
-         putStrLn err
-       Nothing ->
-         forM_ body \entry -> do
-           mapM_ (hPutStrLn stderr) =<< SQL.insertRow conn name columns types entry
+  SQL.createTable conn name columns types >>= \case
+    Left err -> do
+      hPutStrLn stderr "Error on creating a new table:"
+      hPutStrLn stderr $ "  " ++ path ++ " (" ++ name ++ ") " ++ show columns
+      hPrint stderr err
+      exitFailure
+    Right _ -> do
+      forM_ body \entry -> do
+        SQL.insertRow conn name columns types entry >>= \case
+          Left err -> do
+            hPrint stderr err
+            exitFailure
+          Right _ -> return ()

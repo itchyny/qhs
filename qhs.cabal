@@ -18,8 +18,10 @@ executable qhs
   default-extensions:   BlockArguments
                       , FlexibleInstances
                       , ImportQualifiedPost
+                      , LambdaCase
                       , NoFieldSelectors
                       , OverloadedRecordDot
+                      , TupleSections
   other-modules:        Parser
                       , SQL
                       , SQLType
@@ -48,8 +50,10 @@ test-suite spec
   default-extensions:   BlockArguments
                       , FlexibleInstances
                       , ImportQualifiedPost
+                      , LambdaCase
                       , NoFieldSelectors
                       , OverloadedRecordDot
+                      , TupleSections
   other-modules:        Parser
                       , SQL
                       , SQLType

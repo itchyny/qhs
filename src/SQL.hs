@@ -18,31 +18,29 @@ close :: SQLite.Connection -> IO ()
 close = SQLite.close
 
 -- | Creates a new table.
-createTable :: SQLite.Connection -> String -> [String] -> [SQLType] -> IO (Maybe String)
+createTable :: SQLite.Connection -> String -> [String] -> [SQLType] -> IO (Either SomeException ())
 createTable conn name columns types = do
   let stmt = "CREATE TABLE " ++ sqlQuote name ++ " "
            ++ tupled (zipWith quote types columns) ++ ";"
-  e <- try $ SQLite.execute_ conn (fromString stmt)
-  return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
+  try $ SQLite.execute_ conn (fromString stmt)
     where quote t c = sqlQuote c ++ " " ++ show t
 
 -- | Inserts a row into a table.
-insertRow :: SQLite.Connection -> String -> [String] -> [SQLType] -> [String] -> IO (Maybe String)
+insertRow :: SQLite.Connection -> String -> [String] -> [SQLType] -> [String] -> IO (Either SomeException ())
 insertRow conn name columns types entry = do
   let stmt = "INSERT INTO " ++ sqlQuote name ++ tupled (map sqlQuote columns)
            ++ " VALUES " ++ tupled (replicate (length columns) "?") ++ ";"
-  e <- try $ SQLite.execute conn (fromString stmt) (zip types entry)
-  return $ either (Just . (show :: SomeException -> String)) (const Nothing) e
+  try $ SQLite.execute conn (fromString stmt) (zip types entry)
 
 -- | Executes a SQL statement.
-execute :: SQLite.Connection -> String -> IO (Either String ([String], [[Any]]))
+execute :: SQLite.Connection -> String -> IO (Either SomeException ([String], [[Any]]))
 execute conn query = do
   e <- try $ SQLite.query_ conn (fromString query)
   columns <- SQLite.withStatement conn (fromString query) \stmt -> do
     cnt <- toInteger <$> SQLite.columnCount stmt
     forM [0..cnt-1] \i ->
       Text.unpack <$> SQLite.columnName stmt (fromInteger i)
-  return $ either (Left . (show :: SomeException -> String)) (Right . (,) columns) e
+  return $ (columns,) <$> e
 
 sqlQuote :: String -> String
 sqlQuote xs = "`" ++ xs ++ "`"
