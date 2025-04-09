@@ -9,16 +9,16 @@ import Data.Char (isSpace)
 import System.Exit (exitFailure)
 import System.IO
 
-import Option qualified
+import Option
 
-readFromFile :: Option.Option -> Handle -> IO ([String], [[String]])
+readFromFile :: Option -> Handle -> IO ([String], [[String]])
 readFromFile opts handle = do
   contents <- joinMultiLines . lines <$>
-    if Option.gzipped opts
+    if opts.gzipped
        then Char8.unpack . GZip.decompress <$> ByteString.hGetContents handle
        else hGetContents handle
   let (headLine : secondLine : _) = contents ++ [ "", "" ]
-  let delimiter = guard (Option.tabDelimited opts) *> Just "\t" <|> Option.delimiter opts
+  let delimiter = guard opts.tabDelimited *> Just "\t" <|> opts.delimiter
   when (maybe False ((/=1) . length) delimiter) $ do
     hPutStrLn stderr "Invalid delimiter."
     exitFailure
@@ -27,9 +27,9 @@ readFromFile opts handle = do
                       _ -> detectSplitter headLine secondLine
   let headColumns = splitFixedSize splitter 0 headLine
   let size = length headColumns
-  let columns = if Option.skipHeader opts then headColumns else [ 'c' : show i | i <- [1..size] ]
-  let skipLine = if Option.skipHeader opts then tail else id
-  let stripSpaces = if Option.keepLeadingWhiteSpace opts then id else dropWhile isSpace
+  let columns = if opts.skipHeader then headColumns else [ 'c' : show i | i <- [1..size] ]
+  let skipLine = if opts.skipHeader then tail else id
+  let stripSpaces = if opts.keepLeadingWhiteSpace then id else dropWhile isSpace
   let body = filter (not . null) $ map (map stripSpaces . splitFixedSize splitter size) (skipLine contents)
   return (columns, body)
   where joinMultiLines (cs:ds:css) | valid True cs = cs : joinMultiLines (ds:css)

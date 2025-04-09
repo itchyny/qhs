@@ -14,7 +14,7 @@ import System.IO
 import Text.Read (readMaybe)
 
 import File qualified
-import Option qualified
+import Option
 import Parser qualified
 import SQL qualified
 import SQLType qualified
@@ -24,39 +24,39 @@ main = runCommand =<< execParser opts
   where opts = info (helper <*> Option.version <*> Option.options)
                     (fullDesc <> header "qhs - SQL queries on CSV and TSV files")
 
-runCommand :: Option.Option -> IO ()
+runCommand :: Option -> IO ()
 runCommand opts = do
   queryTableMap <- parseQuery =<< fetchQuery opts
   conn <- SQL.open ":memory:"
   runQuery opts conn queryTableMap
   SQL.close conn
 
-runQuery :: Option.Option -> SQLite.Connection -> (String, Parser.TableNameMap) -> IO ()
+runQuery :: Option -> SQLite.Connection -> (String, Parser.TableNameMap) -> IO ()
 runQuery opts conn (query, tableMap) = do
   readFilesCreateTables opts conn tableMap
   ret <- SQL.execute conn query
   case ret of
        Right (cs, rs) -> do
          let outputDelimiter =
-               fromMaybe " " $ guard (Option.tabDelimitedOutput opts) *> Just "\t"
-                            <|> Option.outputDelimiter opts
-                            <|> guard (Option.tabDelimited opts) *> Just "\t"
-                            <|> Option.delimiter opts
-         when (Option.outputHeader opts) $
+               fromMaybe " " $ guard opts.tabDelimitedOutput *> Just "\t"
+                            <|> opts.outputDelimiter
+                            <|> guard opts.tabDelimited *> Just "\t"
+                            <|> opts.delimiter
+         when opts.outputHeader $
            putStrLn $ intercalate outputDelimiter cs
          mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
        Left err -> do
          hPutStrLn stderr err
          exitFailure
 
-fetchQuery :: Option.Option -> IO String
+fetchQuery :: Option -> IO String
 fetchQuery opts = do
-  when (isJust (Option.query opts) && isJust (Option.queryFile opts)) $ do
+  when (isJust opts.query && isJust opts.queryFile) $ do
     hPutStrLn stderr "Can't provide both a query file and a query on the command line."
     exitFailure
-  query <- fromMaybe "" <$> case Option.query opts of
+  query <- fromMaybe "" <$> case opts.query of
                                  Just q -> return (Just q)
-                                 Nothing -> mapM readFile (Option.queryFile opts)
+                                 Nothing -> mapM readFile opts.queryFile
   when (all isSpace query) $ do
     hPutStrLn stderr "Query cannot be empty."
     hPutStrLn stderr "For basic information, try the `--help' option."
@@ -81,15 +81,15 @@ parseQuery qs = do
               hPutStrLn stderr "Probably a bug of qhs. Please submit a issue report."
               exitFailure
 
-readFilesCreateTables :: Option.Option -> SQLite.Connection -> Parser.TableNameMap -> IO ()
+readFilesCreateTables :: Option -> SQLite.Connection -> Parser.TableNameMap -> IO ()
 readFilesCreateTables opts conn tableMap =
   forM_ (Map.toList tableMap) \(path, name) -> do
     let path' = unquote path
     handle <- if path' == "-" then return stdin else openFile path' ReadMode
-    let opts' = opts { Option.gzipped = Option.gzipped opts || ".gz" `isSuffixOf` path' }
+    let opts' = opts { gzipped = opts.gzipped || ".gz" `isSuffixOf` path' }
     (columns, body) <- File.readFromFile opts' handle
     when (null columns) $ do
-      hPutStrLn stderr $ if Option.skipHeader opts
+      hPutStrLn stderr $ if opts.skipHeader
                             then "Header line is expected but missing in file " ++ path
                             else "Warning - data is empty"
       exitFailure
