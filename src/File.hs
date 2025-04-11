@@ -6,12 +6,12 @@ import Control.Monad (guard, when)
 import Data.ByteString.Lazy qualified as ByteString
 import Data.ByteString.Lazy.Char8 qualified as Char8
 import Data.Char (isSpace)
-import Data.List.NonEmpty (NonEmpty((:|)), (<|), head, tail,
-                           uncons, prependList, toList)
+import Data.List.NonEmpty (NonEmpty((:|)), head, prependList, tail, toList,
+                           uncons, (<|))
 import Data.Tuple.Extra (second)
-import Prelude hiding (head, tail)
 import System.Exit (exitFailure)
 import System.IO
+import Prelude hiding (head, tail)
 
 import Option
 
@@ -40,11 +40,11 @@ readFromFile opts handle = do
   return (columns, body)
   where joinMultiLines (cs:ds:css) | valid True cs = cs <| joinMultiLines (ds:css)
                                    | otherwise = joinMultiLines $ (cs ++ "\n" ++ ds) : css
-          where valid False ('"':'"':xs) = valid False xs
+          where valid False ('"':'"':xs)  = valid False xs
                 valid False ('\\':'"':xs) = valid False xs
-                valid b ('"':xs) = valid (not b) xs
-                valid b (_:xs) = valid b xs
-                valid b "" = b
+                valid b ('"':xs)          = valid (not b) xs
+                valid b (_:xs)            = valid b xs
+                valid b ""                = b
         joinMultiLines (cs:css) = cs :| css
         joinMultiLines [] = "" :| []
 

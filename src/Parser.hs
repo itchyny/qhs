@@ -67,7 +67,7 @@ extractTableNames :: String -> FilePath -> Either Parse.ParseError [String]
 extractTableNames query path = everything (++) ([] `mkQ` tableNames)
                             <$> Parse.parseQueryExpr Dialect.mysql (Text.pack path) Nothing (Text.pack query)
   where tableNames (Syntax.TRSimple (name:_)) = fromName name
-        tableNames _ = []
+        tableNames _                          = []
         fromName (Syntax.Name _ name) = [Text.unpack name]
 
 errorString :: Parse.ParseError -> String

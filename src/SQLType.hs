@@ -16,11 +16,11 @@ data SQLType = SQLChar | SQLInt
 
 instance Show SQLType where
   show SQLChar = "CHAR"
-  show SQLInt = "INTEGER"
+  show SQLInt  = "INTEGER"
 
 instance ToField (SQLType, String) where
   toField (SQLChar, cs) = SQLText $ Text.pack cs
-  toField (SQLInt, cs) = maybe SQLNull SQLFloat $ readMaybe cs
+  toField (SQLInt, cs)  = maybe SQLNull SQLFloat $ readMaybe cs
 
 data Any = AnyDouble Double | AnyInt Int | AnyString String | AnyNull
          deriving Eq
@@ -40,9 +40,9 @@ instance IsString Any where
 
 instance Show Any where
   show (AnyDouble d) = show d
-  show (AnyInt i) = show i
+  show (AnyInt i)    = show i
   show (AnyString s) = s
-  show AnyNull = ""
+  show AnyNull       = ""
 
 fromColumnsAndEntries :: [String] -> [[String]] -> ([String], [[Any]])
 fromColumnsAndEntries columns xs = (columns, map (map fromString) xs)

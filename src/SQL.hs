@@ -1,6 +1,6 @@
 module SQL (open, close, createTable, insertRow, execute) where
 
-import Control.Exception (try, SomeException)
+import Control.Exception (SomeException, try)
 import Control.Monad (forM)
 import Data.List (intercalate)
 import Data.String (fromString)
