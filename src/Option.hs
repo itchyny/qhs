@@ -8,18 +8,18 @@ import Paths_qhs qualified as QHS
 -- | Command options
 data Option =
   Option {
-    skipHeader :: Bool,
-    outputHeader :: Bool,
-    delimiter :: Maybe String,
-    tabDelimited :: Bool,
-    pipeDelimited :: Bool,
-    outputDelimiter :: Maybe String,
-    tabDelimitedOutput :: Bool,
-    pipeDelimitedOutput :: Bool,
+    skipHeader            :: Bool,
+    outputHeader          :: Bool,
+    delimiter             :: Maybe String,
+    tabDelimited          :: Bool,
+    pipeDelimited         :: Bool,
+    outputDelimiter       :: Maybe String,
+    tabDelimitedOutput    :: Bool,
+    pipeDelimitedOutput   :: Bool,
     keepLeadingWhiteSpace :: Bool,
-    gzipped :: Bool,
-    queryFile :: Maybe String,
-    query :: Maybe String
+    gzipped               :: Bool,
+    queryFile             :: Maybe String,
+    query                 :: Maybe String
   }
 
 -- | Option parser

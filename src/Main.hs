@@ -1,14 +1,14 @@
 module Main where
 
 import Control.Applicative ((<|>))
-import Control.Monad (forM_, guard, when, unless)
+import Control.Monad (forM_, guard, unless, when)
 import Data.Char (isSpace)
-import Data.List (isSuffixOf, intercalate, transpose)
+import Data.List (intercalate, isSuffixOf, transpose)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe, isJust)
-import Data.Set as Set ((\\), fromList, union)
+import Data.Set as Set (fromList, union, (\\))
 import Database.SQLite.Simple qualified as SQLite
-import Options.Applicative (execParser, helper, info, fullDesc, header)
+import Options.Applicative (execParser, fullDesc, header, helper, info)
 import System.Exit (exitFailure)
 import System.IO
 import Text.Read (readMaybe)
@@ -56,7 +56,7 @@ fetchQuery opts = do
     hPutStrLn stderr "Can't provide both a query file and a query on the command line."
     exitFailure
   query <- fromMaybe "" <$> case opts.query of
-                                 Just q -> return (Just q)
+                                 Just q  -> return (Just q)
                                  Nothing -> mapM readFile opts.queryFile
   when (all isSpace query) $ do
     hPutStrLn stderr "Query cannot be empty."
