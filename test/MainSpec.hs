@@ -11,7 +11,7 @@ spec = qhsSpec
 qhsSpec :: Spec
 qhsSpec =
 
-  describe "qhs" $ do
+  describe "qhs" do
 
     let tests = [
           "basic", "columns", "stdin", "header", "where", "tab", "tab2",
@@ -25,7 +25,7 @@ qhsSpec =
 
     forM_ tests \test -> do
 
-      it ("should be executed correctly: " ++ test) $ do
+      it ("should be executed correctly: " ++ test) do
         let cp = (shell ("bash " ++ test ++ ".sh")) {
               cwd = Just "test/tests",
               std_out = CreatePipe,

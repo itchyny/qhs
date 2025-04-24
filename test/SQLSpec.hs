@@ -14,17 +14,17 @@ spec = do
 
 openCloseSpec :: Spec
 openCloseSpec =
-  describe "open, close" $ do
+  describe "open, close" do
 
-    it "should not throw exception" $ do
+    it "should not throw exception" do
       conn <- SQL.open ":memory:"
       SQL.close conn
 
 tableSpec :: Spec
 tableSpec =
-  describe "createTable, insertRow, execute" $ do
+  describe "createTable, insertRow, execute" do
 
-    it "should create a table" $ do
+    it "should create a table" do
       conn <- SQL.open ":memory:"
       let columns = ["foo", "bar", "baz", "qux"]
       let types = repeat SQLChar
@@ -37,7 +37,7 @@ tableSpec =
       fromRight' ret `shouldBe` fromColumnsAndEntries columns entries
       SQL.close conn
 
-    it "should take care of null values in a number column" $ do
+    it "should take care of null values in a number column" do
       conn <- SQL.open ":memory:"
       let columns = ["foo", "num", "bar", "baz"]
       let types = cycle [SQLChar, SQLInt]
@@ -57,7 +57,7 @@ tableSpec =
       fromRight' ret3 `shouldBe` fromColumnsAndEntries ["avg(baz)"] [["3.1"]]
       SQL.close conn
 
-    it "can create a table when name and column names contain spaces" $ do
+    it "can create a table when name and column names contain spaces" do
       conn <- SQL.open ":memory:"
       let columns = ["foo bar", "baz qux"]
       let types = repeat SQLChar

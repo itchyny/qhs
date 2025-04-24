@@ -24,7 +24,7 @@ readFromFile opts handle = do
   let delimiter = guard opts.tabDelimited *> Just "\t" <|>
                   guard opts.pipeDelimited *> Just "|" <|>
                   opts.delimiter
-  when (maybe False ((/=1) . length) delimiter) $ do
+  when (maybe False ((/=1) . length) delimiter) do
     hPutStrLn stderr "Invalid delimiter."
     exitFailure
   let splitter = case delimiter of

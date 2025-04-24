@@ -52,13 +52,13 @@ runQuery opts conn (query, tableMap) = do
 
 fetchQuery :: Option -> IO String
 fetchQuery opts = do
-  when (isJust opts.query && isJust opts.queryFile) $ do
+  when (isJust opts.query && isJust opts.queryFile) do
     hPutStrLn stderr "Can't provide both a query file and a query on the command line."
     exitFailure
   query <- fromMaybe "" <$> case opts.query of
                                  Just q  -> return (Just q)
                                  Nothing -> mapM readFile opts.queryFile
-  when (all isSpace query) $ do
+  when (all isSpace query) do
     hPutStrLn stderr "Query cannot be empty."
     hPutStrLn stderr "For basic information, try the `--help' option."
     exitFailure
@@ -89,12 +89,12 @@ readFilesCreateTables opts conn tableMap =
     handle <- if path' == "-" then return stdin else openFile path' ReadMode
     let opts' = opts { gzipped = opts.gzipped || ".gz" `isSuffixOf` path' }
     (columns, body) <- File.readFromFile opts' handle
-    when (null columns) $ do
+    when (null columns) do
       hPutStrLn stderr $ if opts.skipHeader
                             then "Header line is expected but missing in file " ++ path
                             else "Warning - data is empty"
       exitFailure
-    when (any (elem ',') columns) $ do
+    when (any (elem ',') columns) do
       hPutStrLn stderr "Column name cannot contain commas"
       exitFailure
     unless (null columns) $
