@@ -11,14 +11,8 @@ brew install itchyny/tap/qhs
 ```
 
 ### Build with stack
-Prepare `stack` command from [here](https://docs.haskellstack.org).
 ```shell
- $ git clone https://github.com/itchyny/qhs
- $ cd qhs
- $ stack install
- $ export PATH=$PATH:$HOME/.local/bin
- $ qhs "SELECT 100+200"
-300
+stack install qhs
 ```
 
 ## Usage
@@ -83,10 +77,10 @@ The command respects the behaviour of the original [q](https://github.com/harelb
  $ qhs --help
 qhs - SQL queries on CSV and TSV files
 
-Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER] 
-           [-t|--tab-delimited] [-p|--pipe-delimited] 
-           [-D|--output-delimiter OUTPUT_DELIMITER] [-T|--tab-delimited-output] 
-           [-P|--pipe-delimited-output] [-k|--keep-leading-whitespace] 
+Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER]
+           [-t|--tab-delimited] [-p|--pipe-delimited]
+           [-D|--output-delimiter OUTPUT_DELIMITER] [-T|--tab-delimited-output]
+           [-P|--pipe-delimited-output] [-k|--keep-leading-whitespace]
            [-z|--gzipped] [-q|--query-filename QUERY_FILENAME] [QUERY]
 
 Available options:
