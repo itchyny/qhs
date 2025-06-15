@@ -44,6 +44,8 @@ jobs:
         run: stack build
       - name: Test
         run: stack test
+      - name: Dist
+        run: stack sdist
       - name: Set executable name
         id: executable
         run: echo name=${{ github.event.repository.name }} >> "$GITHUB_OUTPUT"
