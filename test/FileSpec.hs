@@ -4,8 +4,8 @@ import Data.Char (isSpace)
 import System.IO
 import Test.Hspec (Spec, describe, it, shouldBe, shouldReturn)
 
-import File
-import Option
+import Qhs.File
+import Qhs.Option
 
 spec :: Spec
 spec = do

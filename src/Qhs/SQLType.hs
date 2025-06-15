@@ -1,4 +1,4 @@
-module SQLType (SQLType(..), Any, fromColumnsAndEntries) where
+module Qhs.SQLType (SQLType(..), Any, fromColumnsAndEntries) where
 
 import Control.Applicative ((<|>))
 import Data.Maybe (fromMaybe)

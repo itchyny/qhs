@@ -1,4 +1,12 @@
-module Parser (replaceTableNames, roughlyExtractTableNames, replaceBackTableNames, extractTableNames, errorString, TableNameMap) where
+module Qhs.Parser
+  (
+    replaceTableNames,
+    roughlyExtractTableNames,
+    replaceBackTableNames,
+    extractTableNames,
+    errorString,
+    TableNameMap
+  ) where
 
 import Crypto.Hash qualified as Crypto
 import Data.ByteString.Char8 qualified as Char8

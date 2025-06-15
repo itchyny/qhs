@@ -1,84 +1,72 @@
+cabal-version:          3.0
 name:                   qhs
 version:                0.3.3
-author:                 itchyny <https://github.com/itchyny>
-maintainer:             itchyny <https://github.com/itchyny>
+category:               Console
+synopsis:               Command line tool qhs, SQL queries on CSV and TSV files.
+description:            This is a Haskell port of <https://github.com/harelba/q q command>.
+author:                 itchyny <itchyny@cybozu.co.jp>
+maintainer:             itchyny <itchyny@cybozu.co.jp>
+homepage:               https://github.com/itchyny/qhs
+bug-reports:            https://github.com/itchyny/qhs/issues
 license:                MIT
 license-file:           LICENSE
-category:               Console
-build-type:             Simple
-cabal-version:          >=1.10
-synopsis:               Command line tool qhs, SQL queries on CSV and TSV files.
-description:            This is a Haskell port of q command (https://github.com/harelba/q).
+extra-source-files:     stack.yaml stack.yaml.lock README.md _qhs
+                        test/tests/*.csv test/tests/*.csv.gz test/tests/*.out
+                        test/tests/*.sh test/tests/*.sql
+
+common base
+  default-language:     GHC2021
+  default-extensions:   BlockArguments
+                        LambdaCase
+                        NoFieldSelectors
+                        OverloadedRecordDot
+  build-depends:        base >= 4.18 && < 5
+  ghc-options:          -Wdefault -Wall -Wunused-packages
+
+library qhs-lib
+  import:               base
+  visibility:           private
+  hs-source-dirs:       src
+  exposed-modules:      Qhs
+                        Qhs.CLI
+                        Qhs.File
+                        Qhs.Option
+                        Qhs.Parser
+                        Qhs.SQL
+                        Qhs.SQLType
+  build-depends:        bytestring >= 0.11 && < 0.13
+                      , containers >= 0.6 && < 0.7
+                      , cryptonite >= 0.30 && < 0.31
+                      , extra >= 1.7 && < 1.9
+                      , optparse-applicative >= 0.18 && < 0.19
+                      , simple-sql-parser >= 0.8 && < 0.9
+                      , sqlite-simple >= 0.4 && < 0.5
+                      , syb >= 0.7 && < 0.8
+                      , text >= 2.0 && < 2.2
+                      , zlib >= 0.6 && < 0.8
 
 executable qhs
-  hs-source-dirs:       src
+  import:               base
   main-is:              Main.hs
-  ghc-options:          -threaded -Wall
-  default-language:     Haskell2010
-  default-extensions:   BlockArguments
-                      , FlexibleInstances
-                      , ImportQualifiedPost
-                      , LambdaCase
-                      , NoFieldSelectors
-                      , OverloadedRecordDot
-                      , TupleSections
-  other-modules:        Parser
-                      , SQL
-                      , SQLType
-                      , File
-                      , Option
-                      , Paths_qhs
-  build-depends:        base >= 4.9 && < 5
-                      , bytestring
-                      , containers
-                      , cryptonite
-                      , extra
-                      , optparse-applicative
-                      , simple-sql-parser >= 0.6.0
-                      , split
-                      , sqlite-simple
-                      , syb >= 0.4
-                      , text
-                      , zlib
+  other-modules:        Paths_qhs
+  autogen-modules:      Paths_qhs
+  build-depends:        qhs-lib
 
 test-suite spec
-  hs-source-dirs:       test,src
-  main-is:              Spec.hs
+  import:               base
   type:                 exitcode-stdio-1.0
-  ghc-options:          -threaded -Wall
-  default-language:     Haskell2010
-  default-extensions:   BlockArguments
-                      , FlexibleInstances
-                      , ImportQualifiedPost
-                      , LambdaCase
-                      , NoFieldSelectors
-                      , OverloadedRecordDot
-                      , TupleSections
-  other-modules:        Parser
-                      , SQL
-                      , SQLType
-                      , File
-                      , Option
-                      , Paths_qhs
-                      , ParserSpec
-                      , SQLSpec
-                      , FileSpec
-                      , MainSpec
-  build-depends:        base >= 4.9 && < 5
-                      , bytestring
-                      , containers
-                      , cryptonite
-                      , extra
-                      , hspec
-                      , optparse-applicative
-                      , process
-                      , simple-sql-parser >= 0.6.0
-                      , split
-                      , sqlite-simple
-                      , syb >= 0.4
-                      , text
-                      , zlib
+  hs-source-dirs:       test
+  main-is:              Spec.hs
+  other-modules:        FileSpec
+                        ParserSpec
+                        QhsSpec
+                        SQLSpec
+  build-depends:        qhs-lib
+                      , containers >= 0.6 && < 0.7
+                      , extra >= 1.7 && < 1.8
+                      , hspec >= 2.11 && < 2.12
+                      , process >= 1.6 && < 1.7
 
 source-repository head
   type:     git
-  location: git@github.com:itchyny/qhs.git
+  location: https://github.com/itchyny/qhs.git

@@ -4,8 +4,8 @@ import Control.Monad
 import Data.Either.Extra (fromRight')
 import Test.Hspec (Spec, describe, it, shouldBe)
 
-import SQL
-import SQLType
+import Qhs.SQL as SQL
+import Qhs.SQLType
 
 spec :: Spec
 spec = do

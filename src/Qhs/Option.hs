@@ -1,9 +1,7 @@
-module Option where
+module Qhs.Option (Option(..), options, version) where
 
-import Data.Version (showVersion)
+import Data.Version (Version, showVersion)
 import Options.Applicative
-
-import Paths_qhs qualified as QHS
 
 -- | Command options
 data Option =
@@ -64,8 +62,8 @@ options = Option
   <*> optional (argument str (metavar "QUERY"))
 
 -- | Parser for --version/-v
-version :: Parser (a -> a)
-version = abortOption (InfoMsg ("qhs " ++ showVersion QHS.version)) $
+version :: Version -> Parser (a -> a)
+version ver = abortOption (InfoMsg ("qhs " ++ showVersion ver)) $
     long "version" <>
     short 'v' <>
     help "Show the version of the command." <>

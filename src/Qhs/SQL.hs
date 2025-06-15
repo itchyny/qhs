@@ -1,4 +1,4 @@
-module SQL (open, close, createTable, insertRow, execute) where
+module Qhs.SQL (open, close, createTable, insertRow, execute) where
 
 import Control.Exception (SomeException, try)
 import Control.Monad (forM)
@@ -7,7 +7,7 @@ import Data.String (fromString)
 import Data.Text qualified as Text
 import Database.SQLite.Simple qualified as SQLite
 
-import SQLType
+import Qhs.SQLType
 
 -- | Open a new database connection.
 open :: String -> IO SQLite.Connection

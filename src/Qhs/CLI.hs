@@ -1,4 +1,4 @@
-module Main where
+module Qhs.CLI (main) where
 
 import Control.Applicative ((<|>))
 import Control.Monad (forM_, guard, unless, when)
@@ -7,21 +7,22 @@ import Data.List (intercalate, isSuffixOf, transpose)
 import Data.Map qualified as Map
 import Data.Maybe (fromMaybe, isJust)
 import Data.Set as Set (fromList, union, (\\))
+import Data.Version (Version)
 import Database.SQLite.Simple qualified as SQLite
 import Options.Applicative (execParser, fullDesc, header, helper, info)
 import System.Exit (exitFailure)
 import System.IO
 import Text.Read (readMaybe)
 
-import File qualified
-import Option
-import Parser qualified
-import SQL qualified
-import SQLType
+import Qhs.File qualified as File
+import Qhs.Option as Option
+import Qhs.Parser qualified as Parser
+import Qhs.SQL qualified as SQL
+import Qhs.SQLType
 
-main :: IO ()
-main = runCommand =<< execParser opts
-  where opts = info (helper <*> Option.version <*> Option.options)
+main :: Version -> IO ()
+main ver = execParser opts >>= runCommand
+  where opts = info (helper <*> Option.version ver <*> Option.options)
                     (fullDesc <> header "qhs - SQL queries on CSV and TSV files")
 
 runCommand :: Option -> IO ()

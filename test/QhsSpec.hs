@@ -1,4 +1,4 @@
-module MainSpec (spec) where
+module QhsSpec (spec) where
 
 import Control.Monad
 import System.IO

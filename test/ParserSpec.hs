@@ -5,7 +5,7 @@ import Data.Either.Extra (fromRight')
 import Data.Map qualified as Map
 import Test.Hspec (Spec, describe, it, shouldBe)
 
-import Parser
+import Qhs.Parser
 
 spec :: Spec
 spec = do

@@ -1,4 +1,4 @@
-module File where
+module Qhs.File (readFromFile, detectSplitter, splitFixedSize) where
 
 import Codec.Compression.GZip qualified as GZip
 import Control.Applicative ((<|>))
@@ -13,7 +13,7 @@ import System.Exit (exitFailure)
 import System.IO
 import Prelude hiding (head, tail)
 
-import Option
+import Qhs.Option
 
 readFromFile :: Option -> Handle -> IO ([String], [[String]])
 readFromFile opts handle = do
