@@ -6,6 +6,7 @@ import Control.Monad (guard, when)
 import Data.ByteString.Lazy qualified as ByteString
 import Data.ByteString.Lazy.Char8 qualified as Char8
 import Data.Char (isSpace)
+import Data.List (unsnoc)
 import Data.List.NonEmpty (NonEmpty((:|)), head, prependList, tail, toList,
                            uncons, (<|))
 import Data.Tuple.Extra (second)
@@ -17,7 +18,7 @@ import Qhs.Option
 
 readFromFile :: Option -> Handle -> IO ([String], [[String]])
 readFromFile opts handle = do
-  contents <- joinMultiLines . lines <$>
+  contents <- joinMultiLines . map stripCR . lines <$>
     if opts.gzipped
        then Char8.unpack . GZip.decompress <$> ByteString.hGetContents handle
        else hGetContents handle
@@ -47,6 +48,7 @@ readFromFile opts handle = do
                 valid b ""                = b
         joinMultiLines (cs:css) = cs :| css
         joinMultiLines [] = "" :| []
+        stripCR cs = case unsnoc cs of Just (ts, '\r') -> ts; _ -> cs
 
 detectSplitter :: String -> String -> Char -> Bool
 detectSplitter xs ys = head $ [ s | (x, y, s) <- map splitLines $ toList splitters

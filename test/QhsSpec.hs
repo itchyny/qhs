@@ -15,7 +15,7 @@ qhsSpec =
 
     let tests = [
           "basic", "columns", "stdin", "header", "where", "tab", "tab2",
-          "count", "is_null", "not_null", "output_header", "spaces",
+          "count", "is_null", "not_null", "output_header", "spaces", "crlf",
           "output_delimiter", "tab_delimited_output", "multiline",
           "pipe_delimited", "pipe_delimited_output", "delimiters",
           "query_file", "empty_query", "empty_query_file", "file_spaces",
