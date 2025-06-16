@@ -1,6 +1,6 @@
 cabal-version:          3.0
 name:                   qhs
-version:                0.3.3
+version:                0.4.0
 category:               Console
 synopsis:               Command line tool qhs, SQL queries on CSV and TSV files.
 description:            This is a Haskell port of <https://github.com/harelba/q q command>.
