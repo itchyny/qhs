@@ -35,7 +35,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Haskell
         uses: haskell-actions/setup@v2
         with:
@@ -67,13 +67,13 @@ jobs:
             zip -r ${{ steps.artifact.outputs.name }}.zip ${{ steps.artifact.outputs.name }}
           fi
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ steps.artifact.outputs.name }}
           path: ${{ steps.artifact.outputs.name }}.zip
       - name: Upload dist
         if: matrix.os == 'linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: ${{ steps.dist.outputs.path }}
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
