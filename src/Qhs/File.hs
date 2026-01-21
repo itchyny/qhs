@@ -59,15 +59,17 @@ detectSplitter xs ys = head $ [ s | (x, y, s) <- map splitLines $ toList splitte
 splitFixedSize :: (Char -> Bool) -> Int -> String -> [String]
 splitFixedSize f n = fill . go n
   where go _ "" = []
-        go k (c:cs@(c':_)) | f c && f c' && not (f ' ' && isSpace c') = "" : go (k - 1) cs
-                           | f c = go k cs
+        go k (c:cs) | f c =
+          case cs of
+               (c':_) | f c' && not (f ' ' && isSpace c') -> "" : go (k - 1) cs
+               [] -> [""]
+               _ -> go k cs
         go k ('"':cs) = let (ys, xs) = takeQuotedString cs in xs : go (k - 1) ys
           where takeQuotedString ('"':'"':xs) = fmap ('"':) (takeQuotedString xs)
                 takeQuotedString ('\\':'"':xs) = fmap ('"':) (takeQuotedString xs)
                 takeQuotedString ('"':xs) = (xs, "")
                 takeQuotedString (x:xs) = fmap (x:) (takeQuotedString xs)
                 takeQuotedString "" = ("", "")
-        go k (c:cs) | f c = go k cs
         go 1 cs = [cs]
         go k cs = let (xs, ys) = break f cs in xs : go (k - 1) ys
         fill [] = []

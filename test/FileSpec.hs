@@ -96,6 +96,12 @@ splitFixedSizeSpec =
       let (input, expected) = ("c0,c1,c2,,c3,,,c4", [ "c0", "c1", "c2", "", "c3", "", "", "c4" ])
       splitFixedSize (==',') 0 input `shouldBe` expected
 
+    it "should handle trailing delimiters" do
+      splitFixedSize (=='\t') 0 "foo\t" `shouldBe` [ "foo", "" ]
+      splitFixedSize (=='\t') 0 "foo\t\t" `shouldBe` [ "foo", "", "" ]
+      splitFixedSize (==',') 0 "a,b," `shouldBe` [ "a", "b", "" ]
+      splitFixedSize (==',') 0 "a,," `shouldBe` [ "a", "", "" ]
+
     it "should take the column size into account when splitting with (==',')" do
       let (input, (n1, expected1), (n2, expected2), (n3, expected3), (n4, expected4))
             = ("c0,c1,,c2,foo bar baz,c4",
