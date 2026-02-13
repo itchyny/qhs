@@ -44,9 +44,15 @@ runQuery opts conn (query, tableMap) = do
                             guard opts.tabDelimited *> Just "\t" <|>
                             guard opts.pipeDelimited *> Just "|" <|>
                             opts.delimiter
+      let escapeField s
+            | any needsEscape s = "\"" ++ concatMap escapeChar s ++ "\""
+            | otherwise = s
+            where needsEscape c = c == '"' || c == '\n' || c == '\r' || any (==c) outputDelimiter
+                  escapeChar '"' = "\"\""
+                  escapeChar c = [c]
       when opts.outputHeader $
-        putStrLn $ intercalate outputDelimiter cs
-      mapM_ (putStrLn . intercalate outputDelimiter . map show) rs
+        putStrLn $ intercalate outputDelimiter (map escapeField cs)
+      mapM_ (putStrLn . intercalate outputDelimiter . map (escapeField . show)) rs
     Left err -> do
       hPrint stderr err
       exitFailure
