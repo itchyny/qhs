@@ -66,6 +66,8 @@ test-suite spec
                       , extra >= 1.7 && < 1.8
                       , hspec >= 2.11 && < 2.12
                       , process >= 1.6 && < 1.7
+  build-tool-depends:   hspec-discover:hspec-discover
+                      , qhs:qhs
 
 source-repository head
   type:     git
