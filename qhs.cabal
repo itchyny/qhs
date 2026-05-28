@@ -35,10 +35,10 @@ library qhs-lib
                         Qhs.SQL
                         Qhs.SQLType
   build-depends:        bytestring >= 0.11 && < 0.13
-                      , containers >= 0.6 && < 0.7
+                      , containers >= 0.6 && < 0.9
                       , cryptonite >= 0.30 && < 0.31
                       , extra >= 1.7 && < 1.9
-                      , optparse-applicative >= 0.18 && < 0.19
+                      , optparse-applicative >= 0.18 && < 0.20
                       , simple-sql-parser >= 0.8 && < 0.9
                       , sqlite-simple >= 0.4 && < 0.5
                       , syb >= 0.7 && < 0.8
@@ -62,8 +62,8 @@ test-suite spec
                         QhsSpec
                         SQLSpec
   build-depends:        qhs-lib
-                      , containers >= 0.6 && < 0.7
-                      , extra >= 1.7 && < 1.8
+                      , containers >= 0.6 && < 0.9
+                      , extra >= 1.7 && < 1.9
                       , hspec >= 2.11 && < 2.12
                       , process >= 1.6 && < 1.7
   build-tool-depends:   hspec-discover:hspec-discover
