@@ -32,17 +32,17 @@ readFromFile opts handle = do
                       Just [c] -> (==) c
                       _ -> detectSplitter headLine secondLine
                         where (headLine, secondLine) = second (maybe "" head) (uncons contents)
-  let headColumns = splitFixedSize splitter 0 $ head contents
+  let headColumns = splitFixedSize opts.disableEscapedDoubleQuoting splitter 0 $ head contents
   let size = length headColumns
   let columns = if opts.skipHeader then headColumns else [ 'c' : show i | i <- [1..size] ]
   let skipLine = if opts.skipHeader then tail else toList
   let stripSpaces = if opts.keepLeadingWhiteSpace then id else dropWhile isSpace
-  let body = filter (not . null) $ map (map stripSpaces . splitFixedSize splitter size) (skipLine contents)
+  let body = filter (not . null) $ map (map stripSpaces . splitFixedSize opts.disableEscapedDoubleQuoting splitter size) (skipLine contents)
   return (columns, body)
   where joinMultiLines (cs:ds:css) | valid True cs = cs <| joinMultiLines (ds:css)
                                    | otherwise = joinMultiLines $ (cs ++ "\n" ++ ds) : css
           where valid False ('"':'"':xs)  = valid False xs
-                valid False ('\\':'"':xs) = valid False xs
+                valid False ('\\':'"':xs) | not opts.disableEscapedDoubleQuoting = valid False xs
                 valid b ('"':xs)          = valid (not b) xs
                 valid b (_:xs)            = valid b xs
                 valid b ""                = b
@@ -53,11 +53,11 @@ readFromFile opts handle = do
 detectSplitter :: String -> String -> Char -> Bool
 detectSplitter xs ys = head $ [ s | (x, y, s) <- map splitLines $ toList splitters
                                   , 1 < length x && length x <= length y ] `prependList` splitters
-  where splitLines f = (splitFixedSize f 0 xs, splitFixedSize f 0 ys, f)
+  where splitLines f = (splitFixedSize False f 0 xs, splitFixedSize False f 0 ys, f)
         splitters = (==',') :| [isSpace]
 
-splitFixedSize :: (Char -> Bool) -> Int -> String -> [String]
-splitFixedSize f n = fill . go n
+splitFixedSize :: Bool -> (Char -> Bool) -> Int -> String -> [String]
+splitFixedSize disableEscapedDoubleQuoting f n = fill . go n
   where go _ "" = []
         go k (c:cs) | f c =
           case cs of
@@ -66,7 +66,7 @@ splitFixedSize f n = fill . go n
                _ -> go k cs
         go k ('"':cs) = let (ys, xs) = takeQuotedString cs in xs : go (k - 1) ys
           where takeQuotedString ('"':'"':xs) = fmap ('"':) (takeQuotedString xs)
-                takeQuotedString ('\\':'"':xs) = fmap ('"':) (takeQuotedString xs)
+                takeQuotedString ('\\':'"':xs) | not disableEscapedDoubleQuoting = fmap ('"':) (takeQuotedString xs)
                 takeQuotedString ('"':xs) = (xs, "")
                 takeQuotedString (x:xs) = fmap (x:) (takeQuotedString xs)
                 takeQuotedString "" = ("", "")
