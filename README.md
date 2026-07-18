@@ -1,5 +1,5 @@
 # qhs
-[![CI Status](https://github.com/itchyny/qhs/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/itchyny/qhs/actions?query=branch:main)
+[![CI Status](https://github.com/itchyny/qhs/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/itchyny/qhs/actions/workflows/ci.yaml?query=branch:main)
 
 ### SQL queries on CSV and TSV files
 This is a Haskell implementation of [q](https://github.com/harelba/q) command.
