@@ -12,6 +12,7 @@ spec = do
   replaceTableNamesSpec
   roughlyExtractTableNamesSpec
   replaceBackTableNamesSpec
+  replaceBackTableNamesInTextSpec
   extractTableNamesSpec
 
 replaceTableNamesSpec :: Spec
@@ -108,6 +109,29 @@ replaceBackTableNamesSpec =
       let query = "SELECT * FROM `foo/bar baz qux/quux.csv`"
       let (query', tableMap) = replaceTableNames query
       replaceBackTableNames tableMap query' `shouldBe` query
+
+replaceBackTableNamesInTextSpec :: Spec
+replaceBackTableNamesInTextSpec =
+  describe "replaceBackTableNamesInText" do
+
+    it "should replace a generated table name embedded in error-like text" do
+      let (query', tableMap) = replaceTableNames "SELECT * FROM ./table0 WHERE c0 > 0"
+      -- The query is wrapped in quotes, as in a SQLite error message; the
+      -- query tokenizer of replaceBackTableNames cannot handle this case.
+      let message = "prepare \"" ++ query' ++ "\": no such column: c1"
+      replaceBackTableNamesInText tableMap message
+        `shouldBe` "prepare \"SELECT * FROM ./table0 WHERE c0 > 0\": no such column: c1"
+
+    it "should replace multiple generated table names embedded in text" do
+      let (query', tableMap) = replaceTableNames "SELECT * FROM ./table0 JOIN ./table1"
+      let message = "prepare \"" ++ query' ++ "\" failed"
+      replaceBackTableNamesInText tableMap message
+        `shouldBe` "prepare \"SELECT * FROM ./table0 JOIN ./table1\" failed"
+
+    it "should leave text without generated names unchanged" do
+      let (_, tableMap) = replaceTableNames "SELECT * FROM ./table0"
+      replaceBackTableNamesInText tableMap "no table names here"
+        `shouldBe` "no table names here"
 
 extractTableNamesSpec :: Spec
 extractTableNamesSpec =

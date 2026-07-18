@@ -54,7 +54,7 @@ runQuery opts conn (query, tableMap) = do
         putStrLn $ intercalate outputDelimiter (map escapeField cs)
       mapM_ (putStrLn . intercalate outputDelimiter . map (escapeField . show)) rs
     Left err -> do
-      hPrint stderr err
+      hPutStrLn stderr $ Parser.replaceBackTableNamesInText tableMap $ show err
       exitFailure
 
 fetchQuery :: Option -> IO String

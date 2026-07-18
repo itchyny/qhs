@@ -3,6 +3,7 @@ module Qhs.Parser
     replaceTableNames,
     roughlyExtractTableNames,
     replaceBackTableNames,
+    replaceBackTableNamesInText,
     extractTableNames,
     errorString,
     TableNameMap
@@ -69,6 +70,16 @@ splitQuery = unfoldr split'
 replaceBackTableNames :: TableNameMap -> String -> String
 replaceBackTableNames tableMap = replaceQueryWithTableMap reverseMap
   where reverseMap = Map.fromList $ map swap $ Map.toList tableMap
+
+-- | Replace the generated table names back into the original file names, by
+-- plain substring substitution. Unlike 'replaceBackTableNames', this does not
+-- assume the input is a well-formed query; use it for arbitrary text such as
+-- SQLite error messages, where the query is embedded (e.g. inside quotes) and
+-- cannot be reliably tokenized.
+replaceBackTableNamesInText :: TableNameMap -> String -> String
+replaceBackTableNamesInText tableMap text =
+  Text.unpack $ foldr replace (Text.pack text) (Map.toList tableMap)
+  where replace (name, gen) = Text.replace (Text.pack gen) (Text.pack name)
 
 -- | Extracts the table names using the rigid SQL parser.
 extractTableNames :: String -> FilePath -> Either Parse.ParseError [String]
