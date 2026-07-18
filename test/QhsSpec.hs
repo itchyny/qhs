@@ -22,7 +22,7 @@ qhsSpec =
           "gzip", "gzip_stdin", "avg", "sum", "avg_sum", "seq",
           "group", "group_sum", "concat", "join", "invalid", "invalid_column",
           "multiline_output", "escape_delimiter", "escape_custom_delimiter",
-          "escape_quotes", "escape_carriage_return", "backtick"
+          "escape_quotes", "escape_carriage_return", "backtick", "header_only"
           ]
 
     forM_ tests \test -> do

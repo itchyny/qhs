@@ -114,7 +114,7 @@ createTable :: SQLite.Connection -> String -> String -> [String] -> [[String]] -
 createTable conn name path columns body = do
   let probablyNumberColumn =
         [ all isJust [ readMaybe x :: Maybe Double | x <- xs, not (all isSpace x) ]
-                                                   | xs <- transpose body ]
+                                                   | xs <- take (length columns) (transpose body ++ repeat []) ]
   let types = [ if b then SQLInt else SQLChar | b <- probablyNumberColumn ]
   SQL.createTable conn name columns types >>= \case
     Left err -> do
