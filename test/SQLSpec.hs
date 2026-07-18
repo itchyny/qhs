@@ -1,6 +1,7 @@
 module SQLSpec (spec) where
 
 import Control.Monad
+import Data.Either (isLeft)
 import Data.Either.Extra (fromRight')
 import Test.Hspec (Spec, describe, it, shouldBe)
 
@@ -70,4 +71,19 @@ tableSpec =
       fromRight' ret0 `shouldBe` fromColumnsAndEntries columns entries
       ret1 <- SQL.execute conn "SELECT `foo bar` FROM `test table`"
       fromRight' ret1 `shouldBe` fromColumnsAndEntries ["foo bar"] (map (take 1) entries)
+      SQL.close conn
+
+    it "should return Left instead of throwing on an invalid query" do
+      conn <- SQL.open ":memory:"
+      let columns = ["foo", "bar"]
+      let types = repeat SQLChar
+      _ <- SQL.createTable conn "test_table" columns types
+      _ <- SQL.insertRow conn "test_table" columns types ["a", "b"]
+      retBadColumn <- SQL.execute conn "SELECT nonexistent FROM test_table"
+      isLeft retBadColumn `shouldBe` True
+      retSyntaxError <- SQL.execute conn "SELECT * FROM"
+      isLeft retSyntaxError `shouldBe` True
+      -- The connection is still usable after a failed query.
+      retValid <- SQL.execute conn "SELECT foo FROM test_table"
+      fromRight' retValid `shouldBe` fromColumnsAndEntries ["foo"] [["a"]]
       SQL.close conn

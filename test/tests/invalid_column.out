@@ -1,0 +1,1 @@
+SQLite3 returned ErrorError while attempting to perform prepare "SELECT c1, nonexistent FROM basic.csv": no such column: nonexistent

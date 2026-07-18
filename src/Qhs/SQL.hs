@@ -34,13 +34,12 @@ insertRow conn name columns types entry = do
 
 -- | Executes a SQL statement.
 execute :: SQLite.Connection -> String -> IO (Either SomeException ([String], [[Any]]))
-execute conn query = do
-  e <- try $ SQLite.query_ conn (fromString query)
-  columns <- SQLite.withStatement conn (fromString query) \stmt -> do
-    cnt <- toInteger <$> SQLite.columnCount stmt
-    forM [0..cnt-1] \i ->
-      Text.unpack <$> SQLite.columnName stmt (fromInteger i)
-  return $ (columns,) <$> e
+execute conn query = try $
+  SQLite.withStatement conn (fromString query) \stmt -> do
+    cnt <- SQLite.columnCount stmt
+    columns <- forM [0..cnt-1] (fmap Text.unpack . SQLite.columnName stmt)
+    let rows = SQLite.nextRow stmt >>= maybe (return []) \row -> (row :) <$> rows
+    (,) columns <$> rows
 
 sqlQuote :: String -> String
 sqlQuote xs = "`" ++ concatMap escape xs ++ "`"
