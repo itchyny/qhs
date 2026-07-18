@@ -43,7 +43,9 @@ execute conn query = do
   return $ (columns,) <$> e
 
 sqlQuote :: String -> String
-sqlQuote xs = "`" ++ xs ++ "`"
+sqlQuote xs = "`" ++ concatMap escape xs ++ "`"
+  where escape '`' = "``"
+        escape c   = [c]
 
 tupled :: [String] -> String
 tupled xs = "(" ++ intercalate ", " xs ++ ")"
