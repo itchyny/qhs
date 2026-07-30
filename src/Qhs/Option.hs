@@ -16,6 +16,7 @@ data Option =
     pipeDelimitedOutput         :: Bool,
     keepLeadingWhiteSpace       :: Bool,
     gzipped                     :: Bool,
+    disableDoubleDoubleQuoting  :: Bool,
     disableEscapedDoubleQuoting :: Bool,
     queryFile                   :: Maybe String,
     query                       :: Maybe String
@@ -56,6 +57,8 @@ options = Option
   <*> switch (long "gzipped"
            <> short 'z'
            <> help "Assuming the gzipped input.")
+  <*> switch (long "disable-double-double-quoting"
+           <> help "Disable support for double double-quoting for escaping the double quote character. By default, you can use \"\" inside double quoted fields to escape double quotes.")
   <*> switch (long "disable-escaped-double-quoting"
            <> help "Disable support for escaped double-quoting for escaping the double quote character. By default, you can use \\\" inside double quoted fields to escape double quotes.")
   <*> optional (strOption (long "query-filename"
