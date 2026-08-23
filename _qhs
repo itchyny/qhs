@@ -5,12 +5,16 @@ _qhs()
   _arguments -s -S \
     '(-H --skip-header)'{-H,--skip-header}'[use the first row for column names]' \
     '(-O --output-header)'{-O,--output-header}'[output the header line]' \
-    '(-d --delimiter -t --tab-delimited)'{-d,--delimiter=}'[field delimiter]:DELIMITER' \
-    '(-d --delimiter -t --tab-delimited)'{-t,--tab-delimited}'[use tab for field delimiter]' \
-    '(-D --output-delimiter -T --tab-delimited-output)'{-D,--output-delimiter=}'[field delimiter of output]:OUTPUT_DELIMITER' \
-    '(-D --output-delimiter -T --tab-delimited-output)'{-T,--tab-delimited-output}'[use tab for field delimiter of output]' \
+    '(-d --delimiter -t --tab-delimited -p --pipe-delimited)'{-d,--delimiter=}'[field delimiter]:DELIMITER' \
+    '(-d --delimiter -t --tab-delimited -p --pipe-delimited)'{-t,--tab-delimited}'[use tab for field delimiter]' \
+    '(-d --delimiter -t --tab-delimited -p --pipe-delimited)'{-p,--pipe-delimited}'[use pipe for field delimiter]' \
+    '(-D --output-delimiter -T --tab-delimited-output -P --pipe-delimited-output)'{-D,--output-delimiter=}'[field delimiter of output]:OUTPUT_DELIMITER' \
+    '(-D --output-delimiter -T --tab-delimited-output -P --pipe-delimited-output)'{-T,--tab-delimited-output}'[use tab for field delimiter of output]' \
+    '(-D --output-delimiter -T --tab-delimited-output -P --pipe-delimited-output)'{-P,--pipe-delimited-output}'[use pipe for field delimiter of output]' \
     '(-k --keep-leading-whitespace)'{-k,--keep-leading-whitespace}'[keep leading whitespace in values]' \
     '(-z --gzipped)'{-z,--gzipped}'[assuming the gzipped input]' \
+    '(--disable-double-double-quoting)--disable-double-double-quoting[disable double double-quoting for escaping the double quote]' \
+    '(--disable-escaped-double-quoting)--disable-escaped-double-quoting[disable escaped double-quoting for escaping the double quote]' \
     '(-q --query-filename 1)'{-q,--query-filename=}'[read query from file]:QUERY_FILENAME:_files' \
     '(- 1)'{-v,--version}'[print version]' \
     '(- 1)'{-h,--help}'[print help]' \
