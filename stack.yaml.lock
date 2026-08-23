@@ -13,7 +13,7 @@ packages:
     hackage: simple-sql-parser-0.8.0
 snapshots:
 - completed:
-    sha256: 85363ca92602ef9c8c3f6cfdb188efd3db3209ca3280eea4aad3b38b12a208a1
-    size: 729011
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/24/42.yaml
-  original: lts-24.42
+    sha256: 1c2140555bdf61c30a893b3ec1033987d01eda75ce82a1dda033e8fb6f8b322c
+    size: 732456
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/24/55.yaml
+  original: lts-24.55
