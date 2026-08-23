@@ -6,18 +6,20 @@ import Options.Applicative
 -- | Command options
 data Option =
   Option {
-    skipHeader            :: Bool,
-    outputHeader          :: Bool,
-    delimiter             :: Maybe String,
-    tabDelimited          :: Bool,
-    pipeDelimited         :: Bool,
-    outputDelimiter       :: Maybe String,
-    tabDelimitedOutput    :: Bool,
-    pipeDelimitedOutput   :: Bool,
-    keepLeadingWhiteSpace :: Bool,
-    gzipped               :: Bool,
-    queryFile             :: Maybe String,
-    query                 :: Maybe String
+    skipHeader                  :: Bool,
+    outputHeader                :: Bool,
+    delimiter                   :: Maybe String,
+    tabDelimited                :: Bool,
+    pipeDelimited               :: Bool,
+    outputDelimiter             :: Maybe String,
+    tabDelimitedOutput          :: Bool,
+    pipeDelimitedOutput         :: Bool,
+    keepLeadingWhiteSpace       :: Bool,
+    gzipped                     :: Bool,
+    disableDoubleDoubleQuoting  :: Bool,
+    disableEscapedDoubleQuoting :: Bool,
+    queryFile                   :: Maybe String,
+    query                       :: Maybe String
   }
 
 -- | Option parser
@@ -55,6 +57,10 @@ options = Option
   <*> switch (long "gzipped"
            <> short 'z'
            <> help "Assuming the gzipped input.")
+  <*> switch (long "disable-double-double-quoting"
+           <> help "Disable support for double double-quoting for escaping the double quote character. By default, you can use \"\" inside double quoted fields to escape double quotes.")
+  <*> switch (long "disable-escaped-double-quoting"
+           <> help "Disable support for escaped double-quoting for escaping the double quote character. By default, you can use \\\" inside double quoted fields to escape double quotes.")
   <*> optional (strOption (long "query-filename"
                         <> short 'q'
                         <> metavar "QUERY_FILENAME"

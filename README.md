@@ -81,7 +81,9 @@ Usage: qhs [-H|--skip-header] [-O|--output-header] [-d|--delimiter DELIMITER]
            [-t|--tab-delimited] [-p|--pipe-delimited]
            [-D|--output-delimiter OUTPUT_DELIMITER] [-T|--tab-delimited-output]
            [-P|--pipe-delimited-output] [-k|--keep-leading-whitespace]
-           [-z|--gzipped] [-q|--query-filename QUERY_FILENAME] [QUERY]
+           [-z|--gzipped] [--disable-double-double-quoting]
+           [--disable-escaped-double-quoting]
+           [-q|--query-filename QUERY_FILENAME] [QUERY]
 
 Available options:
   -h,--help                Show this help text
@@ -104,6 +106,16 @@ Available options:
                            Keep leading whitespace in values. The leading
                            whitespaces are stripped off by default.
   -z,--gzipped             Assuming the gzipped input.
+  --disable-double-double-quoting
+                           Disable support for double double-quoting for
+                           escaping the double quote character. By default, you
+                           can use "" inside double quoted fields to escape
+                           double quotes.
+  --disable-escaped-double-quoting
+                           Disable support for escaped double-quoting for
+                           escaping the double quote character. By default, you
+                           can use \" inside double quoted fields to escape
+                           double quotes.
   -q,--query-filename QUERY_FILENAME
                            Read query from the provided filename.
 ```
