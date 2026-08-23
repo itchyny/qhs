@@ -1,6 +1,7 @@
 module Qhs.SQLType (SQLType(..), Any, fromColumnsAndEntries) where
 
 import Control.Applicative ((<|>))
+import Data.Bits (toIntegralSized)
 import Data.Maybe (fromMaybe)
 import Data.String (IsString(..))
 import Data.Text qualified as Text
@@ -20,7 +21,9 @@ instance Show SQLType where
 
 instance ToField (SQLType, String) where
   toField (SQLChar, cs) = SQLText $ Text.pack cs
-  toField (SQLInt, cs)  = maybe SQLNull SQLFloat $ readMaybe cs
+  toField (SQLInt, cs)  = case toIntegralSized =<< (readMaybe cs :: Maybe Integer) of
+                              Just i  -> SQLInteger i
+                              Nothing -> maybe SQLNull SQLFloat $ readMaybe cs
 
 data Any = AnyDouble Double | AnyInt Int | AnyString String | AnyNull
          deriving Eq
